@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29306.81
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HRWebApplication", "HRWebApplication\HRWebApplication.csproj", "{2C04B125-1256-487F-96CD-4F27CBEFD6C5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2C04B125-1256-487F-96CD-4F27CBEFD6C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C04B125-1256-487F-96CD-4F27CBEFD6C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C04B125-1256-487F-96CD-4F27CBEFD6C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C04B125-1256-487F-96CD-4F27CBEFD6C5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2B720988-3C8E-4C2F-B617-6A443AC2C129}
+	EndGlobalSection
+EndGlobal
