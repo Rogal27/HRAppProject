@@ -35,3 +35,61 @@ body {
         display: none;
     }
 }
+
+
+
+/*own css*/
+.navbar-background {
+    background: #E7717D !important;
+}
+
+.navbar-font-color {
+    color: #393131 !important;
+    border-color: #393131 !important;
+}
+
+.navbar-item-font-color {
+    color: #e4e4e4 !important;
+}
+
+.navbar-border {
+    border-color: rgba(137, 131, 131, 0.72) !important;
+}
+
+.navbar-border-hover {
+    border-color: transparent !important;
+}
+
+    .navbar-border-hover:hover {
+        border-color: #C2CAD0 !important;
+    }
+
+.navbar-signup:hover {
+    color: #583514 !important;
+    text-decoration: none !important;
+    border-color: #583514 !important;
+}
+
+.signin-border {
+    border-color: #7E685A !important;
+}
+
+.signin-button {
+    background-color: #AFD275 !important;
+    border-color: #AFD275 !important;
+}
+
+.signin-button:hover {
+    background-color: #A0C669 !important;
+    border-color: #A0C669 !important;
+}
+
+.signin-signup-button {
+    background-color: #C2CAD0 !important;
+    border-color: #C2CAD0 !important;
+}
+
+.signin-signup-button:hover {
+    background-color: #B0B9BD !important;
+    border-color: #B0B9BD !important;
+}

@@ -32,6 +32,11 @@ namespace HRWebApplication.Controllers
         public IActionResult Privacy()
         {
             return View();
+        }        
+
+        public IActionResult Logoff()
+        {
+            return View();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
