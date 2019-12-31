@@ -1,0 +1,43 @@
+﻿@model HRWebApplication.Models.Users
+
+@{
+    ViewData["Title"] = "Sign Up";
+}
+
+<div class="d-flex justify-content-center mt-4 mb-2">
+    <h3>Logo</h3>
+</div>
+<div class="d-flex justify-content-center mb-2">
+    <h3>Create your account</h3>
+</div>
+<div class="d-flex justify-content-center">
+    <form asp-action="SignUp" class="border border-warning rounded pt-3 pb-3 pl-4 pr-4 w-75 signin-border">
+        <div class="form-group mb-1">
+            <label asp-for="Email">Email address:</label>
+            <input asp-for="Email" class="form-control" placeholder="Enter email" id="email" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+        <div class="form-group mb-1">
+            <label asp-for="FirstName">First Name:</label>
+            <input asp-for="FirstName" class="form-control" placeholder="First Name" id="fname" />
+            <span asp-validation-for="FirstName" class="text-danger"></span>
+        </div>
+        <div class="form-group mb-1">
+            <label asp-for="LastName">Last Name:</label>
+            <input asp-for="LastName" class="form-control" placeholder="Last Name" id="lname" />
+            <span asp-validation-for="LastName" class="text-danger"></span>
+        </div>
+        <div class="form-group mb-1">
+            <label>Password:</label>
+            <input class="form-control" type="password" placeholder="Enter password" id="pwd" />
+        </div>
+        <div class="text-center mt-3">
+            <button type="submit" class="btn btn-success p-1 w-75 signin-button">Sign Up</button>
+        </div>
+    </form>
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
