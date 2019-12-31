@@ -181,6 +181,6 @@ namespace HRWebApplication.Controllers
             }
             //ViewData["UserRoleId"] = new SelectList(_context.UserRoles, "UserRoleId", "Role", user.UserRoleId);
             return View(user);
-        }
+        } 
     }
 }
