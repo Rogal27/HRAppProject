@@ -46,11 +46,14 @@ namespace HRWebApplication.Controllers
         }
 
         // GET: JobOffers/Create
-        public IActionResult Create()
+        public async Task<ActionResult> Create()
         {
-            ViewData["CompanyId"] = new SelectList(_context.Companies, "CompanyId", "CompanyName");
-            ViewData["JobOfferStatusId"] = new SelectList(_context.JobOfferStatus, "JobOfferStatusId", "Status");
-            return View();
+            var model = new JobOfferCompanyModel
+            {
+                CompaniesCollection = await _context.Companies.ToListAsync()
+            };
+
+            return View(model);
         }
 
         // POST: JobOffers/Create
@@ -58,17 +61,31 @@ namespace HRWebApplication.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("JobOfferId,JobTitle,SalaryFrom,SalaryTo,Location,CreationDate,Description,ValidUntil,JobOfferStatusId,CompanyId")] JobOffers jobOffers)
+        public async Task<IActionResult> Create([Bind("JobOfferId,JobTitle,SalaryFrom,SalaryTo,Location,Description,ValidUntil,CompanyId")] JobOfferCompanyModel data)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(jobOffers);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+            if (!ModelState.IsValid)
+            { 
+                data.CompaniesCollection = await _context.Companies.ToListAsync();
+                return View(data);
             }
-            ViewData["CompanyId"] = new SelectList(_context.Companies, "CompanyId", "CompanyName", jobOffers.CompanyId);
-            ViewData["JobOfferStatusId"] = new SelectList(_context.JobOfferStatus, "JobOfferStatusId", "Status", jobOffers.JobOfferStatusId);
-            return View(jobOffers);
+
+            var status = _context.JobOfferStatus.FirstOrDefault(stat => stat.Status == "VALID");
+            JobOffers job = new JobOffers
+            {
+                CompanyId = data.CompanyId,
+                CreationDate = DateTime.Now,
+                Description = data.Description,
+                JobOfferStatusId = status.JobOfferStatusId,
+                JobTitle = data.JobTitle,
+                Location = data.Location,
+                SalaryFrom = data.SalaryFrom,
+                SalaryTo = data.SalaryTo,
+                ValidUntil = data.ValidUntil
+            };
+
+            await _context.JobOffers.AddAsync(job);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: JobOffers/Edit/5
