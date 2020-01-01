@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace HRWebApplication.Models
 {
@@ -12,12 +13,23 @@ namespace HRWebApplication.Models
         }
 
         public int JobOfferId { get; set; }
+        [Display(Name = "Job Title")]
+        [Required]
         public string JobTitle { get; set; }
+        [Display(Name = "Salary From")]
+        [DataType(DataType.Text)]
         public int? SalaryFrom { get; set; }
+        [Display(Name = "Salary To")]
+        [DataType(DataType.Text)]
         public int? SalaryTo { get; set; }
         public string Location { get; set; }
         public DateTime CreationDate { get; set; }
+        [Required]
+        [MinLength(5)]
         public string Description { get; set; }
+        [Display(Name = "Offer expiration date")]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]
         public DateTime? ValidUntil { get; set; }
         public int JobOfferStatusId { get; set; }
         public int CompanyId { get; set; }

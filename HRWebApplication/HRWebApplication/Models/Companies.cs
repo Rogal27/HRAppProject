@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
 
 namespace HRWebApplication.Models
@@ -11,7 +12,11 @@ namespace HRWebApplication.Models
         }
 
         public int CompanyId { get; set; }
+        [Display(Name ="Company Name")]
+        [Required]
         public string CompanyName { get; set; }
+        [Required]
+        [MinLength(5)]
         public string Description { get; set; }
 
         public ICollection<JobOffers> JobOffers { get; set; }

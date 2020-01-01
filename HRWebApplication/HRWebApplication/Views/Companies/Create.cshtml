@@ -1,0 +1,37 @@
+﻿@model HRWebApplication.Models.Companies
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h4 class="mt-4 font-weight-bold">Add new company</h4>
+
+<hr />
+<div class="row">
+    <div class="col-md-8 joboffer-style">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group mt-2">
+                <label asp-for="CompanyName" class="control-label"></label>
+                <input asp-for="CompanyName" class="form-control" placeholder="Company Name"/>
+                <span asp-validation-for="CompanyName" class="text-danger"></span>
+            </div>
+            <div class="form-group mt-2">
+                <label asp-for="Description" class="control-label"></label>
+                <textarea asp-for="Description" class="form-control" rows="3" placeholder="Enter description"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group mt-3">
+                <a asp-area="" asp-controller="JobOffers" asp-action="Create" class="btn rounded-pill btn-secondary mr-2">
+                    <i class="fas fa-chevron-left pr-2"></i>
+                    Cancel
+                </a>
+                <button type="submit" class="btn rounded-pill btn-primary">
+                    <i class="fas fa-check pr-2"></i>
+                    Save
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+

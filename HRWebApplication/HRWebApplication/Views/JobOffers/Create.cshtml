@@ -1,69 +1,87 @@
-﻿@model HRWebApplication.Models.JobOffers
+﻿@model HRWebApplication.Models.JobOfferCompanyModel
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Add new Job Offer";
 }
 
-<h2>Create</h2>
+<h4 class="mt-4 font-weight-bold">Add new Job Offer</h4>
 
-<h4>JobOffers</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-8 joboffer-style">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="JobTitle" class="control-label"></label>
-                <input asp-for="JobTitle" class="form-control" />
+                <label asp-for="JobTitle" class="control-label">Job title:</label>
+                <input asp-for="JobTitle" class="form-control" placeholder="Programmer" />
                 <span asp-validation-for="JobTitle" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="SalaryFrom" class="control-label"></label>
-                <input asp-for="SalaryFrom" class="form-control" />
+            <div class="form-group mt-2">
+                <label asp-for="SalaryFrom" class="control-label">Salary From:</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="salary1">PLN</span>
+                    </div>
+                    <input asp-for="SalaryFrom" class="form-control" placeholder="From"/>
+                </div>
                 <span asp-validation-for="SalaryFrom" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="SalaryTo" class="control-label"></label>
-                <input asp-for="SalaryTo" class="form-control" />
+            <div class="form-group mt-2">
+                <label asp-for="SalaryTo" class="control-label">Salary To:</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="salary2">PLN</span>
+                    </div>
+                    <input asp-for="SalaryTo" class="form-control" placeholder="To"/>
+                </div>
                 <span asp-validation-for="SalaryTo" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Location" class="control-label"></label>
-                <input asp-for="Location" class="form-control" />
+            <div class="form-group mt-2">
+                <label asp-for="Location" class="control-label">Location:</label>
+                <input asp-for="Location" class="form-control" placeholder="Warsaw"/>
                 <span asp-validation-for="Location" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="CreationDate" class="control-label"></label>
-                <input asp-for="CreationDate" class="form-control" />
-                <span asp-validation-for="CreationDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
+            <div class="form-group mt-2">
+                <label asp-for="Description" class="control-label">Description:</label>
+                <textarea asp-for="Description" class="form-control" rows="3" placeholder="Enter description"></textarea>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="ValidUntil" class="control-label"></label>
-                <input asp-for="ValidUntil" class="form-control" />
+            <div class="form-group mt-2">
+                <label asp-for="ValidUntil" class="control-label">Offer expiration date:</label>                
+                <div class="input-group">
+                    <input asp-for="ValidUntil" class="form-control" />
+                    <div class="input-group-append">
+                        <span class="input-group-text"><i class="fas fa-calendar-day"></i></span>
+                    </div>
+                </div>
                 <span asp-validation-for="ValidUntil" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="JobOfferStatusId" class="control-label"></label>
-                <select asp-for="JobOfferStatusId" class ="form-control" asp-items="ViewBag.JobOfferStatusId"></select>
+            <div class="form-group mt-2">
+                <label asp-for="Company" class="control-label">Company Name:</label>
+                @Html.DropDownListFor(m => m.CompanyId,
+                    Model.CompaniesCollection.Select(c => new SelectListItem { Text = c.CompanyName, Value = c.CompanyId.ToString() }),
+                    new { @class = "form-control", @id = "companyName" })
+                <span asp-validation-for="CompanyId" class="text-danger"></span>
+                <div class="mt-2">
+                    <span>Could not find company?<a class="ml-3" asp-area="" asp-controller="Companies" asp-action="Create">Create new one.</a></span>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="CompanyId" class="control-label"></label>
-                <select asp-for="CompanyId" class ="form-control" asp-items="ViewBag.CompanyId"></select>
+            <div class="mt-2">
+                <label asp-for="Company.Description" class="control-label">Company Description:</label>
+                <p>Nie umiem wyświetlić opisu- TODO</p>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-default" />
+            <div class="form-group mt-3">
+                <a asp-area="" asp-controller="JobOffers" asp-action="Index" class="btn rounded-pill btn-secondary mr-2">
+                    <i class="fas fa-chevron-left pr-2"></i>
+                    Cancel
+                </a>
+                <button type="submit" class="btn rounded-pill btn-primary">
+                    <i class="fas fa-check pr-2"></i>
+                    Save
+                </button>
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
