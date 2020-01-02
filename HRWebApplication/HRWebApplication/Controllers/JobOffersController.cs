@@ -27,6 +27,14 @@ namespace HRWebApplication.Controllers
             {
                 pageSize = 10;
             }
+            if (pageSize < 1)
+            {
+                pageSize = 10;
+            }
+            if (pageNumber < 0)
+            {
+                pageNumber = 1;
+            }
             return View(await PaginatedList<JobOffers>.CreateAsync(hRProjectDatabaseContext.AsNoTracking(), pageNumber ?? 1, pageSize.Value));
         }
 
