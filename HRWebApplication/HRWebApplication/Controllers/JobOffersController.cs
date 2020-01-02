@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HRWebApplication.Models;
+using HRWebApplication.Services;
 
 namespace HRWebApplication.Controllers
 {
@@ -19,10 +20,14 @@ namespace HRWebApplication.Controllers
         }
 
         // GET: JobOffers
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? pageNumber, int? pageSize = 10)
         {
             var hRProjectDatabaseContext = _context.JobOffers.Include(j => j.Company).Include(j => j.JobOfferStatus);
-            return View(await hRProjectDatabaseContext.ToListAsync());
+            if(pageSize.HasValue==false)
+            {
+                pageSize = 10;
+            }
+            return View(await PaginatedList<JobOffers>.CreateAsync(hRProjectDatabaseContext.AsNoTracking(), pageNumber ?? 1, pageSize.Value));
         }
 
         // GET: JobOffers/Details/5

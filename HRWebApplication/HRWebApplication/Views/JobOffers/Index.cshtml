@@ -1,85 +1,74 @@
-﻿@model IEnumerable<HRWebApplication.Models.JobOffers>
+﻿@model HRWebApplication.Services.PaginatedList<HRWebApplication.Models.JobOffers>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Job Offers";
 }
 
-<h2 class="mt-4">Index</h2>
+<div class="mt-5 row">
+    <div class="col-md-4 text-md-left">
+        <h3 class="font-weight-bold">
+            Job Offer list
+        </h3>
+    </div>
+    <div class="col-md-4 text-md-center">
+        <p>Search window</p>
+    </div>
+    <div class="col-md-4 text-md-right">
+        <a asp-action="Create" class="btn btn-outline-primary rounded-pill">
+            <i class="fa fa-plus pr-2"></i>
+            Add Job Offer
+        </a>
+    </div>
+</div>
+<div class="table-responsive-sm">
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th scope="col" style="min-width: 100px">Job Title</th>
+                <th scope="col">Company</th>
+                <th scope="col">Location</th>
+                <th scope="col" class="text-center">Salary Range</th>
+                <th style="width: 20px"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@Html.ActionLink(item.JobTitle, "Details", new { id = item.JobOfferId })</td>
+                    <td>@item.Company.CompanyName</td>
+                    <td>@item.Location</td>
+                    <td class="text-center">@item.SalaryFrom-@item.SalaryTo</td>
+                    <td>
+                        <a href="@Url.Action("Edit", "JobOffers", new { id = item.JobOfferId })"
+                           class="text-primary">
+                            <i class="fas fa-edit"
+                               title="Edit"></i>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
 
-
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.JobTitle)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SalaryFrom)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SalaryTo)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Location)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreationDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ValidUntil)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Company)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.JobOfferStatus)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.JobTitle)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SalaryFrom)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SalaryTo)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Location)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreationDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ValidUntil)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Company.CompanyName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.JobOfferStatus.Status)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.JobOfferId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.JobOfferId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.JobOfferId">Delete</a>
-            </td>
-        </tr>
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+    var show1_1 = Model.PageIndex == Model.TotalPages ? "" : "d-none";
+    var show1_2 = Model.PageIndex - 2 >= 1 ? "" : "d-none";
+    var show2 = Model.PageIndex - 1 >= 1 ? "" : "d-none";
+    var show4 = Model.PageIndex + 1 <= Model.TotalPages ? "" : "d-none";
+    var show5_1 = Model.PageIndex == 1 ? "" : "d-none";
+    var show5_2 = Model.PageIndex + 2 <= Model.TotalPages ? "" : "d-none";
 }
-    </tbody>
-</table>
+
+<ul class="pagination">
+    <li class="page-item @prevDisabled"><a class="page-link" asp-action="Index" asp-route-pageNumber="@(Model.PageIndex - 1)" asp-route-pageSize="@(Model.PageSize)">Previous</a></li>
+    <li class="page-item @show1_1 @show1_2"><a class="page-link" asp-action="Index" asp-route-pageNumber="@(Model.PageIndex - 2)" asp-route-pageSize="@(Model.PageSize)">@(Model.PageIndex - 2)</a></li>
+    <li class="page-item @show2"><a class="page-link" asp-action="Index" asp-route-pageNumber="@(Model.PageIndex - 1)" asp-route-pageSize="@(Model.PageSize)">@(Model.PageIndex - 1)</a></li>
+    <li class="page-item active"><a class="page-link" asp-action="Index" asp-route-pageNumber="@(Model.PageIndex)" asp-route-pageSize="@(Model.PageSize)">@(Model.PageIndex)</a></li>
+    <li class="page-item @show4"><a class="page-link" asp-action="Index" asp-route-pageNumber="@(Model.PageIndex + 1)" asp-route-pageSize="@(Model.PageSize)">@(Model.PageIndex + 1)</a></li>
+    <li class="page-item @show5_1 @show5_2"><a class="page-link" asp-action="Index" asp-route-pageNumber="@(Model.PageIndex + 2)" asp-route-pageSize="@(Model.PageSize)">@(Model.PageIndex + 2)</a></li>
+    <li class="page-item @nextDisabled"><a class="page-link" asp-action="Index" asp-route-pageNumber="@(Model.PageIndex + 1)" asp-route-pageSize="@(Model.PageSize)">Next</a></li>
+</ul>
