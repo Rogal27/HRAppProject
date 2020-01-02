@@ -182,6 +182,10 @@ namespace HRWebApplication.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var jobOffers = await _context.JobOffers.FindAsync(id);
+            if (jobOffers == null)
+            {
+                return NotFound();
+            }
             _context.JobOffers.Remove(jobOffers);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
