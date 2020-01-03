@@ -20,7 +20,7 @@ namespace HRWebApplication.Controllers
         }
 
         // GET: JobOffers
-        public async Task<IActionResult> Index(int? pageNumber, int? pageSize = 10)
+        public async Task<IActionResult> Index(int? pageNumber = 1, int? pageSize = 10)
         {
             var hRProjectDatabaseContext = _context.JobOffers.Include(j => j.Company).Include(j => j.JobOfferStatus);
             if(pageSize.HasValue==false)
