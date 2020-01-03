@@ -5,30 +5,123 @@
 }
 
 <div class="mt-5 row">
-    <div class="col-md-4 text-md-left">
-        <h3 class="font-weight-bold">
-            Job Offer list
-        </h3>
+    <div class="col-md-4 text-md-left pt-1 pb-1 align-self-end">
+        <button class="btn btn-link deco-none" onclick="RemoveFilters()">
+            <h3 class="font-weight-bold">
+                Job Offer list
+            </h3>
+        </button>
     </div>
-    <div class="col-md-4 text-md-center">
-        <p>Search window</p>
+    <div class="col-md-4 text-md-center pl-md-0 pr-md-0 pt-1 pb-1 align-self-center">
+        <div class="input-group search-input"
+                style="border-radius: 20px">
+            <input name="search"
+                    type="text"
+                    id="JobOfferSearchInput"
+                    class="form-control"
+                    placeholder="Search by offer title..."
+                    aria-label="Search by offer title"
+                    aria-describedby="button-search"/>
+            <div class="input-group-append">
+                <button id="button-search"
+                        class="btn btn-primary"
+                        type="button"
+                        onclick="findMatchingJobOfferSearchString()">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
     </div>
-    <div class="col-md-4 text-md-right">
+    <div class="col-md-4 text-md-right pt-1 pb-1 align-self-center">
         <a asp-action="Create" class="btn btn-outline-primary rounded-pill">
             <i class="fa fa-plus pr-2"></i>
             Add Job Offer
         </a>
     </div>
 </div>
+
+<div class="mt-1 row">
+    <div class="col-md-3 pr-0 mr-0">
+        <button class="btn btn-rounded btn-outline-info mx-2"
+                style="font-size: smaller"
+                data-toggle="collapse"
+                data-target="#filters">
+            Show filters
+            <i class="fas fa-chevron-right pl-2"></i>
+        </button>
+    </div>
+</div>
+<div class="mt-1 row collapse" id="filters">
+    <div class="col-md-5 row align-self-center">
+        <div class="col-md-6 py-1 py-md-0 pr-0">
+            <div class="mb-1" style="font-size: small">
+                Company:
+            </div>
+            <select id="companiesSelect" class="rounded w-90 select-text-ellipsis">
+                <option value="null">Select Company</option>
+            </select>
+        </div>
+        <div class="col-md-6 py-1 py-md-0 pr-0">
+            <div class="mb-1" style="font-size: small">
+                Location:
+            </div>
+            <select id="locationsSelect" class="rounded w-90 select-text-ellipsis">
+                <option value="">Select City</option>
+            </select>
+        </div>
+    </div>    
+    <div class="col-md-4 py-1 py-md-0 align-self-center">
+        <div class="mb-1" style="font-size: small">
+            Salary:
+        </div>
+        <div class="input-group text-center">
+            <input id="salaryFromFilterInput" class="w-45 rounded" name="salaryFrom" type="text" placeholder="From" pattern="^[0-9]*$"/>
+            <span class="input-group-append mx-auto text-center">-</span>
+            <input id="salaryToFilterInput" class="input-group-append w-45 rounded" name="salaryTo" type="text" placeholder="To" pattern="^[0-9]*$"/>
+        </div>
+    </div>
+    <div class="col-md-3 py-1 align-self-center row">
+        <div class="col-md-6 pt-md-2">
+            <button class="btn text-info filters-button" onclick="ApplyFilters()">
+                <i class="far fa-check-circle fa-1x"></i>Apply
+            </button>
+        </div>
+        <div class="col-md-6 pt-md-2">
+            <button class="btn text-danger filters-button" onclick="RemoveFilters()">
+                <i class="far fa-times-circle fa-1x"></i>Remove
+            </button>
+        </div>
+    </div>
+</div>
 <div class="table-responsive-sm">
     <table class="table table-striped table-hover" >
         <thead>
             <tr>
-                <th scope="col" style="min-width: 100px">Job Title</th>
-                <th scope="col">Company</th>
-                <th scope="col">Location</th>
-                <th scope="col" class="text-center">Salary Range</th>
-                <th style="width: 20px"></th>
+                <th scope="col" style="min-width: 120px">
+                    <span id="0ColTable" class="table-sortable" onclick="ColTableClick(0)">
+                        Job Title
+                        <i class="fas fa-sort text-right"></i>
+                    </span>
+                </th>
+                <th scope="col">
+                    <span id="1ColTable" class="table-sortable" onclick="ColTableClick(1)">                    
+                        Company
+                        <i class="fas fa-sort text-right"></i>
+                    </span>
+                </th>
+                <th scope="col">
+                    <span id="2ColTable" class="table-sortable" onclick="ColTableClick(2)">
+                        Location
+                        <i class="fas fa-sort text-right"></i>
+                    </span>
+                </th>
+                <th scope="col" class="text-center">
+                    <span id="3ColTable" class="table-sortable" onclick="ColTableClick(3)">
+                        Salary Range
+                        <i class="fas fa-sort text-right"></i>
+                    </span>
+                </th>
+                <th class="text-right" style="width: 20px" scope="col"><span id="5ColTable">Details</span></th>
             </tr>
         </thead>
         <tbody id="jobOffersTable">
@@ -40,11 +133,11 @@
     <div>
         <span>
             Show
-            <select id="pageSizeSelect" class="ml-1 mr-1" onchange="fetchData(1, this.options[this.selectedIndex].value)">
-                <option value="1">1</option>
+            <select id="pageSizeSelect" class="ml-1 mr-1" onchange="pageSizeSelectChanged()">
                 <option value="10">10</option>
                 <option value="30">30</option>
                 <option value="50">50</option>
+                <option value="1">1</option>
             </select>
             entries
         </span>
@@ -58,24 +151,51 @@
 @section Scripts {
 <script>
     var p_pageNumber = 1;
-    var p_pageSize = 10;
+    var p_pageSize = $("#pageSizeSelect option:selected").val();
     var currentPage = p_pageNumber;
+    var currentJobOfferSearchString = "";
+    var currentCompanyId = null;
+    var currentLocation = null;
+    var salaryFrom = null;
+    var salaryTo = null;
+    var sort = 'date_desc';
+    var col_clicked = new Array(4);
+
+    for (var i = 0; i < 4; i++) {
+        col_clicked[i] = 0;
+    }
 
     $(document).ready(function () {
-        fetchData(p_pageNumber, p_pageSize);        
+        setVariables();
+        fetchData(p_pageNumber, p_pageSize);
+        loadCompaniesSelect();
+        loadLocationsSelect();
+        $("#salaryFromFilterInput").inputFilter(function(value) {
+            return /^\d*$/.test(value);    // Allow digits only, using a RegExp
+        });
+        $("#salaryToFilterInput").inputFilter(function(value) {
+            return /^\d*$/.test(value);    // Allow digits only, using a RegExp
+        });
     });
 
-    function fetchData(pageNumber, pageSize) {
-        var $loading = '<tr><td><div class="spinner-border text-info"/></td> <td colspan="3">Please wait...</td></tr>';
+    function fetchData(pageNumber, pageSize, JobOfferSearchString, CompanyId, Location, sFrom, sTo, sortOrder) {
+        var $loading = '<tr><td><div class="spinner-border text-info"/></td> <td colspan="4">Please wait...</td></tr>';
         $('#jobOffersTable').prepend($loading);
         $.ajax({
             url: 'api/JobOffersApi',
             type: 'GET',
-            data: { pageNumber: pageNumber, pageSize: pageSize },
+            data: { pageNumber: pageNumber, pageSize: pageSize, searchString: JobOfferSearchString, companyId: CompanyId, location: Location, salaryFrom: sFrom, salaryTo: sTo, sortOrder: sortOrder },
             dataType: 'json',
             success: function (data) {
                 currentPage = pageNumber;
                 p_pageSize = pageSize;
+                
+                currentJobOfferSearchString = JobOfferSearchString;
+                currentCompanyId = CompanyId;
+                currentLocation = Location;
+                salaryFrom = sFrom;
+                salaryTo = sTo;
+                sort = sortOrder;
 
                 var $tableBody = $('<tbody id="jobOffersTable"/>');
 
@@ -87,7 +207,16 @@
                     //console.log($row);
                     $row.append($('<td/>').append(item.company.companyName));
                     $row.append($('<td/>').append(item.location));
-                    $row.append($('<td/>').addClass('text-center').append(item.salaryFrom + '-' + item.salaryTo));
+                    var salaryFromString = item.salaryFrom;
+                    var salaryToString = item.salaryTo;
+                    if (salaryFromString == null) {
+                        salaryFromString = ''
+                    }
+                    if (salaryToString == null) {
+                        salaryToString = ''
+                    }
+
+                    $row.append($('<td/>').addClass('text-center').append(salaryFromString + '-' + salaryToString));
                     $row.append($('<td/>').append($('<a href="/JobOffers/Edit/' + item.jobOfferId + '"/>').addClass('text-primary').append($('<i title="Edit"/>').addClass('fas fa-edit'))));
                     $tableBody.append($row);
                 });
@@ -99,23 +228,24 @@
                 var $btn3 = $('<li/>');
                 var $btn4 = $('<li/>');
                 var $btn5 = $('<li/>');
-                $btn1.addClass('page-item').append('<button class="page-link" onclick="fetchData(' + (pageNumber - 1) + ',' + pageSize + ')">Previous</button>');
-                $btn5.addClass('page-item').append('<button class="page-link" onclick="fetchData(' + (pageNumber + 1) + ',' + pageSize + ')">Next</button>');
+                $btn1.addClass('page-item').append('<button class="page-link" onclick="fetchData(' + (pageNumber - 1) + ',' + pageSize + ', currentJobOfferSearchString , currentCompanyId , currentLocation, salaryFrom, salaryTo, sort)">Previous</button>');
+                $btn5.addClass('page-item').append('<button class="page-link" onclick="fetchData(' + (pageNumber + 1) + ',' + pageSize + ', currentJobOfferSearchString , currentCompanyId , currentLocation, salaryFrom, salaryTo, sort)">Next</button>');
+
                 if (pageNumber == 1) {
                     $btn1.addClass('disabled');
-                    $btn2.addClass('page-item active').append('<button class="page-link" onclick="fetchData(' + pageNumber + ',' + pageSize + ')">' + pageNumber + '</button>');
+                    $btn2.addClass('page-item active').append('<button class="page-link" onclick="fetchData(' + pageNumber + ',' + pageSize + ', currentJobOfferSearchString , currentCompanyId , currentLocation, salaryFrom, salaryTo, sort)">' + pageNumber + '</button>');
                     $pagelistBody.append($btn1);
                     $pagelistBody.append($btn2);
-                    if (data.totalPages == 1) {
+                    if (data.totalPages == 1 || data.totalPages == 0) {
                         $btn5.addClass('disabled');
                     }
                     else if (data.totalPages == 2) {
-                        $btn3.addClass('page-item').append('<button class="page-link" onclick="fetchData(' + (pageNumber + 1) + ',' + pageSize + ')">' + (pageNumber + 1) + '</button>');
+                        $btn3.addClass('page-item').append('<button class="page-link" onclick="fetchData(' + (pageNumber + 1) + ',' + pageSize + ', currentJobOfferSearchString , currentCompanyId , currentLocation, salaryFrom, salaryTo, sort)">' + (pageNumber + 1) + '</button>');
                         $pagelistBody.append($btn3);
                     }
                     else {
-                        $btn3.addClass('page-item').append('<button class="page-link" onclick="fetchData(' + (pageNumber + 1) + ',' + pageSize + ')">' + (pageNumber + 1) + '</button>');
-                        $btn4.addClass('page-item').append('<button class="page-link" onclick="fetchData(' + (pageNumber + 2) + ',' + pageSize + ')">' + (pageNumber + 2) + '</button>');
+                        $btn3.addClass('page-item').append('<button class="page-link" onclick="fetchData(' + (pageNumber + 1) + ',' + pageSize + ', currentJobOfferSearchString , currentCompanyId , currentLocation, salaryFrom, salaryTo, sort)">' + (pageNumber + 1) + '</button>');
+                        $btn4.addClass('page-item').append('<button class="page-link" onclick="fetchData(' + (pageNumber + 2) + ',' + pageSize + ', currentJobOfferSearchString , currentCompanyId , currentLocation, salaryFrom, salaryTo, sort)">' + (pageNumber + 2) + '</button>');
                         $pagelistBody.append($btn3);
                         $pagelistBody.append($btn4);
                     }
@@ -123,7 +253,7 @@
                 }
                 else if (pageNumber == data.totalPages) {
                     $btn5.addClass('disabled');
-                    $btn4.addClass('page-item active').append('<button class="page-link" onclick="fetchData(' + pageNumber + ',' + pageSize + ')">' + pageNumber + '</button>');
+                    $btn4.addClass('page-item active').append('<button class="page-link" onclick="fetchData(' + pageNumber + ',' + pageSize + ', currentJobOfferSearchString , currentCompanyId , currentLocation, salaryFrom, salaryTo, sort)">' + pageNumber + '</button>');
                     if (data.totalPages == 1) {
                         $btn1.addClass('disabled');
                         $pagelistBody.append($btn1);
@@ -131,15 +261,15 @@
                         $pagelistBody.append($btn5);
                     }
                     else if (data.totalPages == 2) {
-                        $btn3.addClass('page-item').append('<button class="page-link" onclick="fetchData(' + (pageNumber - 1) + ',' + pageSize + ')">' + (pageNumber - 1) + '</button>');
+                        $btn3.addClass('page-item').append('<button class="page-link" onclick="fetchData(' + (pageNumber - 1) + ',' + pageSize + ', currentJobOfferSearchString , currentCompanyId , currentLocation, salaryFrom, salaryTo, sort)">' + (pageNumber - 1) + '</button>');
                         $pagelistBody.append($btn1);
                         $pagelistBody.append($btn3);
                         $pagelistBody.append($btn4);
                         $pagelistBody.append($btn5);
                     }
                     else {
-                        $btn2.addClass('page-item').append('<button class="page-link" onclick="fetchData(' + (pageNumber - 2) + ',' + pageSize + ')">' + (pageNumber - 2) + '</button>');
-                        $btn3.addClass('page-item').append('<button class="page-link" onclick="fetchData(' + (pageNumber - 1) + ',' + pageSize + ')">' + (pageNumber - 1) + '</button>');
+                        $btn2.addClass('page-item').append('<button class="page-link" onclick="fetchData(' + (pageNumber - 2) + ',' + pageSize + ', currentJobOfferSearchString , currentCompanyId , currentLocation, salaryFrom, salaryTo, sort)">' + (pageNumber - 2) + '</button>');
+                        $btn3.addClass('page-item').append('<button class="page-link" onclick="fetchData(' + (pageNumber - 1) + ',' + pageSize + ', currentJobOfferSearchString , currentCompanyId , currentLocation, salaryFrom, salaryTo, sort)">' + (pageNumber - 1) + '</button>');
                         $pagelistBody.append($btn1);
                         $pagelistBody.append($btn2);
                         $pagelistBody.append($btn3);
@@ -148,9 +278,9 @@
                     }
                 }
                 else {
-                    $btn2.addClass('page-item').append('<button class="page-link" onclick="fetchData(' + (pageNumber - 1) + ',' + pageSize + ')">' + (pageNumber - 1) + '</button>');
-                    $btn3.addClass('page-item active').append('<button class="page-link" onclick="fetchData(' + pageNumber + ',' + pageSize + ')">' + pageNumber + '</button>');
-                    $btn4.addClass('page-item').append('<button class="page-link" onclick="fetchData(' + (pageNumber + 1) + ',' + pageSize + ')">' + (pageNumber + 1) + '</button>');
+                    $btn2.addClass('page-item').append('<button class="page-link" onclick="fetchData(' + (pageNumber - 1) + ',' + pageSize + ', currentJobOfferSearchString , currentCompanyId , currentLocation, salaryFrom, salaryTo, sort)">' + (pageNumber - 1) + '</button>');
+                    $btn3.addClass('page-item active').append('<button class="page-link" onclick="fetchData(' + pageNumber + ',' + pageSize + ', currentJobOfferSearchString , currentCompanyId , currentLocation, salaryFrom, salaryTo, sort)">' + pageNumber + '</button>');
+                    $btn4.addClass('page-item').append('<button class="page-link" onclick="fetchData(' + (pageNumber + 1) + ',' + pageSize + ', currentJobOfferSearchString , currentCompanyId , currentLocation, salaryFrom, salaryTo, sort)">' + (pageNumber + 1) + '</button>');
                     $pagelistBody.append($btn1);
                     $pagelistBody.append($btn2);
                     $pagelistBody.append($btn3);
@@ -161,11 +291,144 @@
                 $('#pageList').replaceWith($pagelistBody);
             },
             error: function () {
-                    alert('Error! Please try again.');
+                alert('Error! Please try again.');
+                $('#jobOffersTable').empty();
             }
         }).done(function () {
-
+            
         });
     }
+
+    function findMatchingJobOfferSearchString() {
+        fetchData(1, p_pageSize, $('#JobOfferSearchInput').val());
+    }
+
+
+    function loadCompaniesSelect() {
+        $.getJSON('api/JobOffersApi/GetCompanies')
+            .done(function (data) {
+                // On success, 'data' contains a list of products.
+                //console.log(data);
+                $.each(data, function (key, item) {
+                    // Add a list item for the product.
+
+                    $('<option value="' + item.companyId + '">' + item.companyName + '</option>').appendTo($('#companiesSelect'));
+                });
+
+            });
+    }
+
+    function loadLocationsSelect() {
+        $.getJSON('api/JobOffersApi/GetLocations')
+            .done(function (data) {
+                // On success, 'data' contains a list of products.
+                //console.log(data);
+                $.each(data, function (key, item) {
+                    // Add a list item for the product.
+
+                    $('<option value="' + item + '">' + item + '</option>').appendTo($('#locationsSelect'));
+                });
+
+            });
+    }
+
+    function setVariables() {
+        p_pageNumber = 1;
+        p_pageSize = $("#pageSizeSelect option:selected").val();
+        currentPage = p_pageNumber;
+        currentJobOfferSearchString = "";
+        currentCompanyId = null;
+        currentLocation = null;
+        salaryFrom = null;
+        salaryTo = null;
+        sort = 'date_desc';
+
+        ColStyleDelete();
+    }
+
+    function ApplyFilters() {
+        var compID = parseInt($('#companiesSelect').val());
+        var loc = $('#locationsSelect').val();
+        var sFrom = parseInt($('#salaryFromFilterInput').val());
+        var sTo = parseInt($('#salaryToFilterInput').val());        
+        if (isNaN(compID) == true) {
+            compID = null;
+        }
+        if (loc == "") {
+            loc = null;
+        }
+        if (isNaN(sFrom) == true) {
+            sFrom = null;
+        }
+        if (isNaN(sTo) == true) {
+            sTo = null;
+        }
+        fetchData(1, p_pageSize, currentJobOfferSearchString, compID, loc, sFrom, sTo);
+        
+    }
+
+    function RemoveFilters() {
+        setVariables();
+        ColStyleDelete();
+        fetchData(1, p_pageSize);
+    }
+
+    function ColTableClick(id) {
+        if (id < 0 || id > 3) return;
+        var sortStringBeg;
+        var sortStringEnd;
+        var sortString;
+        if (col_clicked[id] == 0) {
+            ColStyleDelete();
+            $('#' + id + 'ColTable').addClass('table-sortable-picked');
+            col_clicked[id]++;
+            sortStringEnd = '_asc';
+        }
+        else if (col_clicked[id] == 1) {
+            col_clicked[id]++;
+            sortStringEnd = '_desc';
+        }
+        else if (col_clicked[id] == 2) {
+            col_clicked[id] = 1;
+            sortStringEnd = '_asc';
+        }
+        switch (id) {
+            case 0:
+                sortStringBeg = 'title';
+                break;
+            case 1:
+                sortStringBeg = 'company';
+                break;
+            case 2:
+                sortStringBeg = 'location';
+                break;
+            case 3:
+                sortStringBeg = 'salary';
+                break;
+        }
+
+        sortString = sortStringBeg + sortStringEnd;
+
+        fetchData(1, p_pageSize, currentJobOfferSearchString, currentCompanyId, currentLocation, salaryFrom, salaryTo, sortString);
+    }
+
+
+
+    function ColStyleDelete() {
+        for (var i = 0; i < 4; i++) {
+            $('#' + i + 'ColTable').removeClass('table-sortable-picked');
+        }
+        for (var i = 0; i < 4; i++) {
+            col_clicked[i] = 0;
+        }
+        
+    }
+
+    function pageSizeSelectChanged() {
+        ColStyleDelete();
+        p_pageSize = $("#pageSizeSelect option:selected").val();
+        fetchData(1, p_pageSize, currentJobOfferSearchString, currentCompanyId, currentLocation, salaryFrom, salaryTo, sort);
+    }
+
 </script>
 }
