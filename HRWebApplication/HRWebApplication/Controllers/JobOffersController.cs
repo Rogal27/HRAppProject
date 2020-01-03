@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HRWebApplication.Models;
+using HRWebApplication.Services;
 
 namespace HRWebApplication.Controllers
 {
@@ -19,10 +20,22 @@ namespace HRWebApplication.Controllers
         }
 
         // GET: JobOffers
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? pageNumber = 1, int? pageSize = 10)
         {
             var hRProjectDatabaseContext = _context.JobOffers.Include(j => j.Company).Include(j => j.JobOfferStatus);
-            return View(await hRProjectDatabaseContext.ToListAsync());
+            if(pageSize.HasValue==false)
+            {
+                pageSize = 10;
+            }
+            if (pageSize < 1)
+            {
+                pageSize = 10;
+            }
+            if (pageNumber < 0)
+            {
+                pageNumber = 1;
+            }
+            return View(await PaginatedList<JobOffers>.CreateAsync(hRProjectDatabaseContext.AsNoTracking(), pageNumber ?? 1, pageSize.Value));
         }
 
         // GET: JobOffers/Details/5
@@ -169,6 +182,10 @@ namespace HRWebApplication.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var jobOffers = await _context.JobOffers.FindAsync(id);
+            if (jobOffers == null)
+            {
+                return NotFound();
+            }
             _context.JobOffers.Remove(jobOffers);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

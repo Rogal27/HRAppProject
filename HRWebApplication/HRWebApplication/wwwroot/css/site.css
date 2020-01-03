@@ -101,3 +101,45 @@ body {
 .font-sans-pro {
     font-family: 'Source Sans Pro', sans-serif;
 }
+
+.deco-none {
+    color: inherit;
+    text-decoration: inherit;
+}
+
+.deco-none:link {
+    color: inherit;
+    text-decoration: inherit;
+}
+
+.deco-none:hover {
+    color: inherit;
+    text-decoration: inherit;
+}
+
+.w-45 {
+    width: 45% !important;
+}
+
+.w-90 {
+    width: 90% !important;
+}
+
+.select-text-ellipsis {
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.filters-button:active {
+}
+.filters-button:focus {
+    box-shadow: none;
+}
+
+.table-sortable:hover {
+    cursor: pointer;
+}
+
+.table-sortable-picked {
+    color: #2470a9
+}
