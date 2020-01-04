@@ -125,6 +125,7 @@
             </tr>
         </thead>
         <tbody id="jobOffersTable">
+            <tr id="jobOffersTableFirstRow" class="d-none"><td><div class="spinner-border text-info" /></td> <td colspan="4">Please wait...</td></tr>
         </tbody>
     </table>
 </div>
@@ -179,8 +180,7 @@
     });
 
     function fetchData(pageNumber, pageSize, JobOfferSearchString, CompanyId, Location, sFrom, sTo, sortOrder) {
-        var $loading = '<tr><td><div class="spinner-border text-info"/></td> <td colspan="4">Please wait...</td></tr>';
-        $('#jobOffersTable').prepend($loading);
+        $('#jobOffersTableFirstRow').removeClass('d-none');
         $.ajax({
             url: 'api/JobOffersApi',
             type: 'GET',
@@ -189,7 +189,7 @@
             success: function (data) {
                 currentPage = pageNumber;
                 p_pageSize = pageSize;
-                
+
                 currentJobOfferSearchString = JobOfferSearchString;
                 currentCompanyId = CompanyId;
                 currentLocation = Location;
@@ -198,6 +198,7 @@
                 sort = sortOrder;
 
                 var $tableBody = $('<tbody id="jobOffersTable"/>');
+                $tableBody.append('<tr id="jobOffersTableFirstRow" class="d-none"><td><div class="spinner-border text-info" /></td> <td colspan="4">Please wait...</td></tr>');
 
                 //console.log(data);
 
@@ -294,9 +295,13 @@
                 alert('Error! Please try again.');
                 $('#jobOffersTable').empty();
             }
-        }).done(function () {
-            
-        });
+        })
+            .done(function () {
+
+            })
+            .always(function () {
+                $('#jobOffersTableFirstRow').addClass('d-none');
+            });
     }
 
     function findMatchingJobOfferSearchString() {

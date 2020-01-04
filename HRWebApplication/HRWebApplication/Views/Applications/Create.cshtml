@@ -1,0 +1,89 @@
+﻿@model HRWebApplication.Models.Applications
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h4 class="mt-4 font-weight-bold">Application for @ViewData["JobTitle"]</h4>
+<hr />
+<div class="row">
+    <div class="col-md-8 joboffer-style">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group mt-2">
+                <label asp-for="FirstName" class="control-label">First Name:</label>                
+                <div class="input-group">
+                    <input asp-for="FirstName" class="form-control" placeholder="First Name" />
+                    <div class="input-group-append">
+                        <span class="input-group-text"><i class="fas fa-user-alt"></i></span>
+                    </div>
+                </div>
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-group mt-2">
+                <label asp-for="LastName" class="control-label">Last Name:</label>                
+                <div class="input-group">
+                    <input asp-for="LastName" class="form-control" placeholder="Last Name" />
+                    <div class="input-group-append">
+                        <span class="input-group-text"><i class="fas fa-user-alt"></i></span>
+                    </div>
+                </div>
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+            <div class="form-group mt-2">
+                <label asp-for="Email" class="control-label">Email:</label>                
+                <div class="input-group">
+                    <input asp-for="Email" class="form-control" placeholder="Email" />
+                    <div class="input-group-append">
+                        <span class="input-group-text"><i class="fas fa-at"></i></span>
+                    </div>
+                </div>
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group mt-2">
+                <label asp-for="Phone" class="control-label">Phone Number:</label>
+                <div class="input-group">
+                    <input asp-for="Phone" class="form-control" placeholder="+48123456789" />
+                    <div class="input-group-append">
+                        <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                    </div>
+                </div>
+                <span asp-validation-for="Phone" class="text-danger"></span>
+            </div>
+            <div class="form-group mt-2">
+                <label asp-for="BirthDate" class="control-label">Birth Date:</label>
+                <div class="input-group">
+                    <input asp-for="BirthDate" class="form-control" />
+                    <div class="input-group-append">
+                        <span class="input-group-text"><i class="fas fa-calendar-day"></i></span>
+                    </div>
+                </div>
+                <span asp-validation-for="BirthDate" class="text-danger"></span>
+            </div>
+            <div class="form-group mt-2">
+                @*<label asp-for="Cvid" class="control-label"></label>
+                    <select asp-for="Cvid" class="form-control" asp-items="ViewBag.Cvid"></select>*@
+                File dropper
+            </div>
+            <div class="form-group mt-2">
+                @*<label asp-for="ApplicationStatusId" class="control-label"></label>
+                    <select asp-for="ApplicationStatusId" class="form-control" asp-items="ViewBag.ApplicationStatusId"></select>*@
+                Others file dropper
+            </div>
+            <div class="form-group mt-3">
+                <a asp-area="" asp-controller="JobOffers" asp-action="Index" class="btn rounded-pill btn-secondary mr-2">
+                    <i class="fas fa-chevron-left pr-2"></i>
+                    Cancel
+                </a>
+                <button type="submit" class="btn rounded-pill btn-success">
+                    <i class="fas fa-check pr-2"></i>
+                    Apply
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
