@@ -94,6 +94,7 @@ namespace HRWebApplication
                 if (context.Failure is OpenIdConnectProtocolException && context.Failure.Message.Contains("AADB2C90118"))
                 {
                     // If the user clicked the reset password link, redirect to the reset password route
+                    //TODO
                     context.Response.Redirect("/Session/ResetPassword");
                 }
                 else if (context.Failure is OpenIdConnectProtocolException && context.Failure.Message.Contains("access_denied"))
