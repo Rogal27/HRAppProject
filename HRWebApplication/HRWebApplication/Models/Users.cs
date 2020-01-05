@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HRWebApplication.Models
 {
@@ -9,7 +11,7 @@ namespace HRWebApplication.Models
         public Users()
         {
             Applications = new HashSet<Applications>();
-            HRJobOffers = new HashSet<HrjobOffers>();
+            JobOffers = new HashSet<JobOffers>();
         }
 
         public int UserId { get; set; }
@@ -22,6 +24,8 @@ namespace HRWebApplication.Models
 
         public UserRoles UserRole { get; set; }
         public ICollection<Applications> Applications { get; set; }
-        public ICollection<HrjobOffers> HRJobOffers { get; set; }
+        [ForeignKey("UserId")]
+        [JsonIgnore]
+        public ICollection<JobOffers> JobOffers { get; set; }
     }
 }

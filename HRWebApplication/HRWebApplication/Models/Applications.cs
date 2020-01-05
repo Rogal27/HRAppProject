@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -31,6 +32,7 @@ namespace HRWebApplication.Models
         public CV Cv { get; set; }
         public JobOffers JobOffer { get; set; }
         public Users User { get; set; }
+        [JsonIgnore]
         public ICollection<ApplicationAttachment> ApplicationAttachment { get; set; }
     }
 }

@@ -134,12 +134,7 @@ namespace HRWebApplication.Controllers
                 return null;
             }
 
-            var result = from jo in _context.JobOffers
-                         join hrjo in _context.HRJobOffers on jo.JobOfferId equals hrjo.JobOfferId into offer
-                         from o in offer
-                         where o.UserId == HRID
-                         select jo;
-            result = result.Include(j => j.Company).Include(j => j.JobOfferStatus);
+            var result = _context.JobOffers.Include(j => j.Company).Include(j => j.JobOfferStatus).Where(j => j.UserId == HRID);
 
             if (pageSize < 1)
             {

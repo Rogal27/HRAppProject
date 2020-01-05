@@ -22,12 +22,7 @@ namespace HRWebApplication.Controllers
             var identity = (ClaimsIdentity)User.Identity;
             IEnumerable<Claim> claims = identity.Claims;
             string userId = claims.Where(x => x.Type == Globals.IdClaimName).First().Value;
-            //int id = 1;
-            int id = 0;
-            if (int.TryParse(userId, out id) == false)
-            {
-                id = 0;
-            }
+            int id = Helper.GetUserId(User);
             ViewData["UserID"] = id;
             return View();
         }

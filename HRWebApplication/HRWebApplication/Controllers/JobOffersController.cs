@@ -25,20 +25,6 @@ namespace HRWebApplication.Controllers
         // GET: JobOffers
         public IActionResult Index()
         {
-            //var hRProjectDatabaseContext = _context.JobOffers.Include(j => j.Company).Include(j => j.JobOfferStatus);
-            //if(pageSize.HasValue==false)
-            //{
-            //    pageSize = 10;
-            //}
-            //if (pageSize < 1)
-            //{
-            //    pageSize = 10;
-            //}
-            //if (pageNumber < 0)
-            //{
-            //    pageNumber = 1;
-            //}
-            //return View(await PaginatedList<JobOffers>.CreateAsync(hRProjectDatabaseContext.AsNoTracking(), pageNumber ?? 1, pageSize.Value));
             return View();
         }
 
@@ -86,6 +72,10 @@ namespace HRWebApplication.Controllers
                 return View(data);
             }
 
+            int userID = Helper.GetUserId(User);
+            if (userID == -1)
+                return Unauthorized();
+
             var status = _context.JobOfferStatus.FirstOrDefault(stat => stat.Status == "VALID");
             JobOffers job = new JobOffers
             {
@@ -97,26 +87,17 @@ namespace HRWebApplication.Controllers
                 Location = data.Location,
                 SalaryFrom = data.SalaryFrom,
                 SalaryTo = data.SalaryTo,
+                UserId = userID,
                 ValidUntil = data.ValidUntil
             };
-            int userID = Helper.GetUserId(User);
-            if (userID == -1)
-                return Unauthorized();
+            
 
 
 
             await _context.JobOffers.AddAsync(job);
             await _context.SaveChangesAsync();
 
-            var hrjob = new HrjobOffers()
-            {
-                JobOfferId = job.JobOfferId,
-                UserId = userID
-            };
-            await _context.HRJobOffers.AddAsync(hrjob);
-            await _context.SaveChangesAsync();
-
-            return RedirectToAction("YourJobOffers","HR");
+            return RedirectToAction("YourJobOffers", "HR");
         }
 
         // GET: JobOffers/Edit/5
@@ -132,8 +113,10 @@ namespace HRWebApplication.Controllers
             {
                 return NotFound();
             }
+            int userID = Helper.GetUserId(User);
+            if (userID == -1 || jobOffers.UserId != userID)
+                return Unauthorized();
 
-            
             var model = new JobOfferCompanyModel
             {
                 CompaniesCollection = await _context.Companies.ToListAsync(),
@@ -146,6 +129,7 @@ namespace HRWebApplication.Controllers
                 Location = jobOffers.Location,
                 SalaryFrom = jobOffers.SalaryFrom,
                 SalaryTo = jobOffers.SalaryTo,
+                UserId = jobOffers.UserId,
                 ValidUntil = jobOffers.ValidUntil                
             };
             ViewData["JobOfferStatusId"] = new SelectList(_context.JobOfferStatus, "JobOfferStatusId", "Status", jobOffers.JobOfferStatusId);
@@ -158,12 +142,16 @@ namespace HRWebApplication.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "HR")]
-        public async Task<IActionResult> Edit(int id, [Bind("JobOfferId,JobTitle,SalaryFrom,SalaryTo,Location,Description,ValidUntil,CompanyId,JobOfferStatusId,CreationDate")] JobOfferCompanyModel data)
+        public async Task<IActionResult> Edit(int id, [Bind("JobOfferId,JobTitle,SalaryFrom,SalaryTo,Location,Description,ValidUntil,CompanyId,JobOfferStatusId,CreationDate,UserId")] JobOfferCompanyModel data)
         {
             if (id != data.JobOfferId)
             {
                 return NotFound();
             }
+
+            int userID = Helper.GetUserId(User);
+            if (userID == -1 || userID != data.UserId)
+                return Unauthorized();
 
             if (ModelState.IsValid)
             {

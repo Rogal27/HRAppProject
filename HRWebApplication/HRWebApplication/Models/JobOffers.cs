@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -9,7 +10,6 @@ namespace HRWebApplication.Models
         public JobOffers()
         {
             Applications = new HashSet<Applications>();
-            HRJobOffers = new HashSet<HrjobOffers>();
         }
 
         public int JobOfferId { get; set; }
@@ -36,10 +36,13 @@ namespace HRWebApplication.Models
         public DateTime? ValidUntil { get; set; }
         public int JobOfferStatusId { get; set; }
         public int CompanyId { get; set; }
+        public int UserId { get; set; }
 
         public Companies Company { get; set; }
         public JobOfferStatus JobOfferStatus { get; set; }
+        [JsonIgnore]
+        public Users User { get; set; }
+        [JsonIgnore]
         public ICollection<Applications> Applications { get; set; }
-        public ICollection<HrjobOffers> HRJobOffers { get; set; }
     }
 }
