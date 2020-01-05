@@ -1,0 +1,61 @@
+﻿@using System.Security.Principal
+@using Microsoft.AspNetCore.Authentication.AzureADB2C.UI
+@using Microsoft.Extensions.Options
+@using System.Security.Claims
+@using HRWebApplication.Helpers
+
+
+@if (User.Identity.IsAuthenticated)
+{
+
+    var identity = (ClaimsIdentity)User.Identity;
+    IEnumerable<Claim> claims = identity.Claims;
+    string userId = claims.Where(x => x.Type == Globals.IdClaimName).First().Value;
+    //int id = 1;
+    int id = 0;
+    if (int.TryParse(userId, out id) == false)
+    {
+        id = 0;
+    }
+
+
+    <ul class="navbar-nav ml-auto">
+        <li class="nav-item mr-2">
+            <div class="d-none d-md-block">
+                <a class="navbar-item-font-color pr-2 pl-2 pt-1 pb-1 navbar-signup" asp-controller="Users" asp-action="Details" asp-route-id="@id">Hello @User.Identity.Name</a>
+            </div>
+        </li>
+        <li class="nav-item mr-3">
+            <div class="d-none d-md-block">
+                <a class="navbar-item-font-color pr-2 pl-2 pt-1 pb-1 border rounded navbar-signup" asp-controller="Api" asp-action="SignOut">Sign Out</a>
+            </div>
+        </li>
+        <li>
+            <div class="d-block d-md-none border-top navbar-border mt-1 pt-2 mb-1 ml-4 mr-4 d-flex justify-content-center">
+                <a class="navbar-item-font-color pr-2 pl-2 pt-1 pb-1 mr-1 navbar-signup" asp-controller="Users" asp-action="Details" asp-route-id="@id">Hello @User.Identity.Name</a>
+                <a class="navbar-item-font-color pr-2 pl-2 pt-1 pb-1 ml-1 border rounded navbar-signup" asp-controller="Api" asp-action="SignOut">Sign Out</a>
+            </div>
+        </li>
+    </ul>
+}
+else
+{
+    <ul class="navbar-nav ml-auto">
+        @*<li class="nav-item mr-2">
+                <div class="d-none d-sm-block">
+                    <a class="navbar-item-font-color pr-2 pl-2 pt-1 pb-1 navbar-signup" asp-controller="Api" asp-action="LogIn">Sign In</a>
+                </div>
+            </li>*@
+        <li class="nav-item mr-3">
+            <div class="d-none d-md-block">
+                <a class="navbar-item-font-color pr-2 pl-2 pt-1 pb-1 border rounded navbar-signup" asp-controller="Api" asp-action="SignIn">Sign In</a>
+            </div>
+        </li>
+        <li>
+            <div class="d-block d-md-none border-top navbar-border mt-1 pt-2 mb-1 ml-4 mr-4 d-flex justify-content-center">
+                @*<a class="navbar-item-font-color pr-2 pl-2 pt-1 pb-1 mr-1 navbar-signup" asp-controller="Api" asp-action="LogIn">Sign In</a>*@
+                <a class="navbar-item-font-color pr-2 pl-2 pt-1 pb-1 ml-1 border rounded navbar-signup" asp-controller="Api" asp-action="SignIn">Sign In</a>
+            </div>
+        </li>
+    </ul>
+}
