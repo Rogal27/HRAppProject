@@ -22,7 +22,6 @@ namespace HRWebApplication.Models
         public virtual DbSet<Attachments> Attachments { get; set; }
         public virtual DbSet<Companies> Companies { get; set; }
         public virtual DbSet<CV> Cv { get; set; }
-        public virtual DbSet<HrjobOffers> HRJobOffers { get; set; }
         public virtual DbSet<JobOffers> JobOffers { get; set; }
         public virtual DbSet<JobOfferStatus> JobOfferStatus { get; set; }
         public virtual DbSet<UserRoles> UserRoles { get; set; }
@@ -169,32 +168,6 @@ namespace HRWebApplication.Models
                     .IsRequired()
                     .HasMaxLength(50)
                     .IsUnicode(false);
-            });
-
-            modelBuilder.Entity<HrjobOffers>(entity =>
-            {
-                entity.ToTable("HRJobOffers");
-
-                entity.HasIndex(e => new { e.UserId, e.JobOfferId })
-                    .HasName("idx_user_joboffer");
-
-                entity.Property(e => e.Id).HasColumnName("ID");
-
-                entity.Property(e => e.JobOfferId).HasColumnName("JobOfferID");
-
-                entity.Property(e => e.UserId).HasColumnName("UserID");
-
-                entity.HasOne(d => d.JobOffer)
-                    .WithMany(p => p.HRJobOffers)
-                    .HasForeignKey(d => d.JobOfferId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_HRJobOffers_JobOffers");
-
-                entity.HasOne(d => d.User)
-                    .WithMany(p => p.HRJobOffers)
-                    .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_HRJobOffers_Users");
             });
 
             modelBuilder.Entity<JobOffers>(entity =>

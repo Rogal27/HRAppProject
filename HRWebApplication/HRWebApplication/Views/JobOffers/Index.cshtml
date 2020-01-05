@@ -6,7 +6,7 @@
 
 <div class="mt-5 row">
     <div class="col-md-4 text-md-left pt-1 pb-1 align-self-end">
-        <button class="btn btn-link deco-none" onclick="RemoveFilters()">
+        <button class="btn btn-link deco-none text-decoration-none" onclick="RemoveFilters()">
             <h3 class="font-weight-bold">
                 Job Offer list
             </h3>
@@ -32,15 +32,9 @@
             </div>
         </div>
     </div>
-    <div class="col-md-4 text-md-right pt-1 pb-1 align-self-center">
-        <a asp-action="Create" class="btn btn-outline-primary rounded-pill">
-            <i class="fa fa-plus pr-2"></i>
-            Add Job Offer
-        </a>
-    </div>
 </div>
 
-<div class="mt-1 row">
+<div class="mt-1 mb-2 row">
     <div class="col-md-3 pr-0 mr-0">
         <button class="btn btn-rounded btn-outline-info mx-2"
                 style="font-size: smaller"
@@ -51,7 +45,8 @@
         </button>
     </div>
 </div>
-<div class="mt-1 row collapse" id="filters">
+
+<div class="mt-1 mb-1 row collapse" id="filters">
     <div class="col-md-5 row align-self-center">
         <div class="col-md-6 py-1 py-md-0 pr-0">
             <div class="mb-1" style="font-size: small">
@@ -95,7 +90,7 @@
 </div>
 <div class="table-responsive-sm">
     <table class="table table-striped table-hover" >
-        <thead>
+        <thead class="thead-light">
             <tr>
                 <th scope="col" style="min-width: 120px">
                     <span id="0ColTable" class="table-sortable" onclick="ColTableClick(0)">
@@ -115,17 +110,16 @@
                         <i class="fas fa-sort text-right"></i>
                     </span>
                 </th>
-                <th scope="col" class="text-center">
+                <th scope="col" class="text-center" style="min-width: 180px">
                     <span id="3ColTable" class="table-sortable" onclick="ColTableClick(3)">
                         Salary Range
                         <i class="fas fa-sort text-right"></i>
                     </span>
                 </th>
-                <th class="text-right" style="width: 20px" scope="col"><span id="5ColTable">Details</span></th>
             </tr>
         </thead>
         <tbody id="jobOffersTable">
-            <tr id="jobOffersTableFirstRow" class="d-none"><td><div class="spinner-border text-info" /></td> <td colspan="4">Please wait...</td></tr>
+            <tr id="jobOffersTableFirstRow" class="d-none"><td><div class="spinner-border text-info" /></td> <td colspan="3">Please wait...</td></tr>
         </tbody>
     </table>
 </div>
@@ -198,7 +192,7 @@
                 sort = sortOrder;
 
                 var $tableBody = $('<tbody id="jobOffersTable"/>');
-                $tableBody.append('<tr id="jobOffersTableFirstRow" class="d-none"><td><div class="spinner-border text-info" /></td> <td colspan="4">Please wait...</td></tr>');
+                $tableBody.append('<tr id="jobOffersTableFirstRow" class="d-none"><td><div class="spinner-border text-info" /></td> <td colspan="3">Please wait...</td></tr>');
 
                 //console.log(data);
 
@@ -218,7 +212,6 @@
                     }
 
                     $row.append($('<td/>').addClass('text-center').append(salaryFromString + '-' + salaryToString));
-                    $row.append($('<td/>').append($('<a href="/JobOffers/Edit/' + item.jobOfferId + '"/>').addClass('text-primary').append($('<i title="Edit"/>').addClass('fas fa-edit'))));
                     $tableBody.append($row);
                 });
                 $('#jobOffersTable').replaceWith($tableBody);
@@ -312,11 +305,7 @@
     function loadCompaniesSelect() {
         $.getJSON('api/JobOffersApi/GetCompanies')
             .done(function (data) {
-                // On success, 'data' contains a list of products.
-                //console.log(data);
                 $.each(data, function (key, item) {
-                    // Add a list item for the product.
-
                     $('<option value="' + item.companyId + '">' + item.companyName + '</option>').appendTo($('#companiesSelect'));
                 });
 
@@ -326,11 +315,7 @@
     function loadLocationsSelect() {
         $.getJSON('api/JobOffersApi/GetLocations')
             .done(function (data) {
-                // On success, 'data' contains a list of products.
-                //console.log(data);
                 $.each(data, function (key, item) {
-                    // Add a list item for the product.
-
                     $('<option value="' + item + '">' + item + '</option>').appendTo($('#locationsSelect'));
                 });
 
