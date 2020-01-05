@@ -49,7 +49,6 @@ namespace HRWebApplication.Controllers
             {
                 return NotFound();
             }
-
             var jobOffers = await _context.JobOffers
                 .Include(j => j.Company)
                 .Include(j => j.JobOfferStatus)
@@ -58,7 +57,6 @@ namespace HRWebApplication.Controllers
             {
                 return NotFound();
             }
-
             return View(jobOffers);
         }
 
@@ -129,15 +127,29 @@ namespace HRWebApplication.Controllers
             {
                 return NotFound();
             }
-
             var jobOffers = await _context.JobOffers.FindAsync(id);
             if (jobOffers == null)
             {
                 return NotFound();
             }
-            ViewData["CompanyId"] = new SelectList(_context.Companies, "CompanyId", "CompanyName", jobOffers.CompanyId);
+
+            
+            var model = new JobOfferCompanyModel
+            {
+                CompaniesCollection = await _context.Companies.ToListAsync(),
+                CompanyId = jobOffers.CompanyId,
+                CreationDate = jobOffers.CreationDate,
+                Description = jobOffers.Description,
+                JobOfferId = jobOffers.JobOfferId,
+                JobOfferStatusId = jobOffers.JobOfferStatusId,
+                JobTitle = jobOffers.JobTitle,
+                Location = jobOffers.Location,
+                SalaryFrom = jobOffers.SalaryFrom,
+                SalaryTo = jobOffers.SalaryTo,
+                ValidUntil = jobOffers.ValidUntil                
+            };
             ViewData["JobOfferStatusId"] = new SelectList(_context.JobOfferStatus, "JobOfferStatusId", "Status", jobOffers.JobOfferStatusId);
-            return View(jobOffers);
+            return View(model);
         }
 
         // POST: JobOffers/Edit/5
@@ -146,9 +158,9 @@ namespace HRWebApplication.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "HR")]
-        public async Task<IActionResult> Edit(int id, [Bind("JobOfferId,JobTitle,SalaryFrom,SalaryTo,Location,CreationDate,Description,ValidUntil,JobOfferStatusId,CompanyId")] JobOffers jobOffers)
+        public async Task<IActionResult> Edit(int id, [Bind("JobOfferId,JobTitle,SalaryFrom,SalaryTo,Location,Description,ValidUntil,CompanyId,JobOfferStatusId,CreationDate")] JobOfferCompanyModel data)
         {
-            if (id != jobOffers.JobOfferId)
+            if (id != data.JobOfferId)
             {
                 return NotFound();
             }
@@ -157,12 +169,12 @@ namespace HRWebApplication.Controllers
             {
                 try
                 {
-                    _context.Update(jobOffers);
+                    _context.Update(data.GetJobOffer());
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!JobOffersExists(jobOffers.JobOfferId))
+                    if (!JobOffersExists(data.JobOfferId))
                     {
                         return NotFound();
                     }
@@ -171,11 +183,10 @@ namespace HRWebApplication.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Details), new { id });
             }
-            ViewData["CompanyId"] = new SelectList(_context.Companies, "CompanyId", "CompanyName", jobOffers.CompanyId);
-            ViewData["JobOfferStatusId"] = new SelectList(_context.JobOfferStatus, "JobOfferStatusId", "Status", jobOffers.JobOfferStatusId);
-            return View(jobOffers);
+            ViewData["JobOfferStatusId"] = new SelectList(_context.JobOfferStatus, "JobOfferStatusId", "Status", data.JobOfferStatusId);
+            return View(data);
         }
 
         // GET: JobOffers/Delete/5

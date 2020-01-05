@@ -23,13 +23,16 @@ namespace HRWebApplication.Models
         [DataType(DataType.Text)]
         public int? SalaryTo { get; set; }
         public string Location { get; set; }
+        [Display(Name = "Offer creation date")]
+        [DataType(DataType.DateTime)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy H:mm}", ApplyFormatInEditMode = true)]
         public DateTime CreationDate { get; set; }
         [Required]
         [MinLength(5)]
         public string Description { get; set; }
         [Display(Name = "Offer expiration date")]
         [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime? ValidUntil { get; set; }
         public int JobOfferStatusId { get; set; }
         public int CompanyId { get; set; }
