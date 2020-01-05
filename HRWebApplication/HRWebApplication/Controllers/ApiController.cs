@@ -32,7 +32,7 @@ namespace HRWebApplication.Controllers
 
             //TODO:
             if (User.IsInRole(UserRolesTypes.Admin))
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Admin");
             else if (User.IsInRole(UserRolesTypes.HR))
                 return RedirectToAction("Index", "HR");
             else if (User.IsInRole(UserRolesTypes.Normal))

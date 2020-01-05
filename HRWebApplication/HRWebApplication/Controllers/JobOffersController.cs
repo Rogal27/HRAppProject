@@ -35,10 +35,24 @@ namespace HRWebApplication.Controllers
             {
                 return NotFound();
             }
-            var jobOffers = await _context.JobOffers
+
+            JobOffers jobOffers;
+            if(User.IsInRole(UserRolesTypes.Admin)==true)
+            {
+                jobOffers = await _context.JobOffers
+                .Include(j => j.Company)
+                .Include(j => j.JobOfferStatus)
+                .Include(j => j.User)
+                .FirstOrDefaultAsync(m => m.JobOfferId == id);
+            }
+            else
+            {
+                jobOffers = await _context.JobOffers
                 .Include(j => j.Company)
                 .Include(j => j.JobOfferStatus)
                 .FirstOrDefaultAsync(m => m.JobOfferId == id);
+            }
+            
             if (jobOffers == null)
             {
                 return NotFound();
@@ -177,37 +191,43 @@ namespace HRWebApplication.Controllers
             return View(data);
         }
 
-        // GET: JobOffers/Delete/5
-        [Authorize(Roles = "HR")]
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+        //// GET: JobOffers/Delete/5
+        //[Authorize(Roles = "HR,ADMIN")]
+        //public async Task<IActionResult> Delete(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            var jobOffers = await _context.JobOffers
-                .Include(j => j.Company)
-                .Include(j => j.JobOfferStatus)
-                .FirstOrDefaultAsync(m => m.JobOfferId == id);
-            if (jobOffers == null)
-            {
-                return NotFound();
-            }
+        //    var jobOffers = await _context.JobOffers
+        //        .Include(j => j.Company)
+        //        .Include(j => j.JobOfferStatus)
+        //        .FirstOrDefaultAsync(m => m.JobOfferId == id);
+        //    if (jobOffers == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return View(jobOffers);
-        }
+        //    return View(jobOffers);
+        //}
 
         // POST: JobOffers/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "HR")]
+        [Authorize(Roles = "HR,ADMIN")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var jobOffers = await _context.JobOffers.FindAsync(id);
             if (jobOffers == null)
             {
                 return NotFound();
+            }
+            int userId = Helper.GetUserId(User);
+            if (User.IsInRole(UserRolesTypes.HR) == true)
+            {
+                if (jobOffers.UserId != userId)
+                    return Unauthorized();
             }
             _context.JobOffers.Remove(jobOffers);
             await _context.SaveChangesAsync();
