@@ -23,7 +23,7 @@ namespace HRWebApplication.Models
         public string Phone { get; set; }
         [Display(Name = "Birth Date")]
         [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime BirthDate { get; set; }
         public int? Cvid { get; set; }
         public int ApplicationStatusId { get; set; }

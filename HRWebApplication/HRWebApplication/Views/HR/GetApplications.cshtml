@@ -1,0 +1,404 @@
+﻿@using HRWebApplication.Helpers
+@model HRWebApplication.Services.PaginatedList<HRWebApplication.Models.Applications>
+
+@{
+    ViewData["Title"] = "Users";
+}
+
+<div class="mt-5 row">
+    <div class="col-md-4 text-md-left pt-1 pb-1 align-self-end">
+        <a class="btn btn-link deco-none text-decoration-none" asp-controller="HR" asp-action="GetApplications" asp-route-pageSize="@(Model.PageSize)">
+            <h3 class="font-weight-bold">
+                Applications list
+            </h3>
+        </a>
+    </div>
+    <div class="col-md-4 text-md-center pl-md-0 pr-md-0 pt-1 pb-1 align-self-center">
+        <div class="input-group search-input"
+             style="border-radius: 20px">
+            <input name="search"
+                   type="text"
+                   id="SearchInput"
+                   class="form-control"
+                   placeholder="Search..."
+                   aria-label="Search"
+                   aria-describedby="button-search" />
+            <div class="input-group-append">
+                <button id="button-search"
+                        class="btn btn-primary"
+                        type="button"
+                        onclick="Search()">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 text-md-left pl-md-5 pt-1 pb-1 align-self-center">
+        <div class="mb-1" style="font-size: small">
+            Job Title:
+        </div>
+        <select id="jobSelect" class="rounded w-90 select-text-ellipsis" asp-items="ViewBag.JobTitles" onchange="JobSelectChanged()">
+            <option value="">Select Job</option>
+        </select>
+    </div>
+</div>
+
+@*<div class="mt-1 mb-2 row">
+        <div class="col-md-3 pr-0 mr-0">
+            <button class="btn btn-rounded btn-outline-info mx-2"
+                    style="font-size: smaller"
+                    data-toggle="collapse"
+                    data-target="#filters">
+                Show filters
+                <i class="fas fa-chevron-right pl-2"></i>
+            </button>
+        </div>
+    </div>
+
+
+    <div class="mt-1 mb-2 row collapse align-self-center" id="filters">
+
+        <div class="col-md-3 py-1 py-md-0 pr-0">
+            <div class="mb-1" style="font-size: small">
+                Role:
+            </div>
+            <select id="roleSelect" class="rounded w-90 select-text-ellipsis" asp-items="ViewBag.UserRoles">
+                <option value="null">Select Role</option>
+            </select>
+        </div>
+        <div class="col-md-2 pt-md-2 py-1 py-md-0 text-right">
+            <button class="btn text-info filters-button" type="submit">
+                <i class="far fa-check-circle fa-1x"></i>Apply
+            </button>
+        </div>
+
+        <div class="col-md-3 pt-md-2 pl-md-0 py-1 py-md-0">
+            <a class="btn text-danger filters-button" asp-controller="Admin" asp-action="GetUsers" asp-route-pageSize="@(Model.PageSize)">
+                <i class="far fa-times-circle fa-1x"></i>Remove
+            </a>
+        </div>
+    </div>*@
+<div class="table-responsive-md pt-2">
+    <table class="table table-striped table-hover">
+        <thead class="thead-light">
+            <tr>
+                <th scope="col" style="min-width: 140px">
+                    <span id="0ColTable" class="table-sortable" onclick="ColTableClick(0)">
+                        Job Title
+                        <i class="fas fa-sort text-right"></i>
+                    </span>
+                </th>
+                <th scope="col" style="min-width: 140px">
+                    <span id="1ColTable" class="table-sortable" onclick="ColTableClick(1)">
+                        First Name
+                        <i class="fas fa-sort text-right"></i>
+                    </span>
+                <th scope="col" style="min-width: 120px">
+                    <span id="2ColTable" class="table-sortable" onclick="ColTableClick(2)">
+                        Last Name
+                        <i class="fas fa-sort text-right"></i>
+                    </span>
+                </th>
+                <th scope="col" style="min-width: 140px">
+                    <span id="3ColTable" class="table-sortable" onclick="ColTableClick(3)">
+                        Status
+                        <i class="fas fa-sort text-right"></i>
+                    </span>
+                </th>
+                <th class="text-right" style="width: 20px" scope="col"><span id="5ColTable">Details</span></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.JobOffer.JobTitle)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FirstName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.LastName)
+                    </td>
+                    <td>
+                        @if (item.ApplicationStatus.Status == ApplicationStatusState.Accepted)
+                        {
+                            <span class="text-success">Accepted</span>
+                        }
+                        else if (item.ApplicationStatus.Status == ApplicationStatusState.Pending)
+                        {
+                            <span class="text-warning">Pending</span>
+                        }
+                        else if (item.ApplicationStatus.Status == ApplicationStatusState.Rejected)
+                        {
+                            <span class="text-danger">Rejected</span>
+                        }
+                        else
+                        {
+                            <span class="text-danger">No Status</span>
+                        }
+                    </td>
+                    <td>
+                        <a href="@Url.Action("Details", "HR", new { id = item.ApplicationId })"
+                           class="text-primary">
+                            <i class="fas fa-clipboard-list" title="Details"></i>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+    var show1_1 = Model.PageIndex == Model.TotalPages ? "" : "d-none";
+    var show1_2 = Model.PageIndex - 2 >= 1 ? "" : "d-none";
+    var show2 = Model.PageIndex - 1 >= 1 ? "" : "d-none";
+    var show4 = Model.PageIndex + 1 <= Model.TotalPages ? "" : "d-none";
+    var show5_1 = Model.PageIndex == 1 ? "" : "d-none";
+    var show5_2 = Model.PageIndex + 2 <= Model.TotalPages ? "" : "d-none";
+}
+
+<div class="d-flex justify-content-between align-items-center">
+    <div>
+        <span>
+            Show
+            <select id="pageSizeSelect" class="ml-1 mr-1" onchange="pageSizeSelectChanged()">
+                <option value="10">10</option>
+                <option value="30">30</option>
+                <option value="50">50</option>
+                <option value="1">1</option>
+            </select>
+            entries
+        </span>
+    </div>
+    <div>
+        <ul class="pagination">
+            <li class="page-item @prevDisabled">
+                <a class="page-link" 
+                   asp-action="GetUsers" 
+                   asp-route-pageNumber="@(Model.PageIndex - 1)"
+                   asp-route-pageSize="@(Model.PageSize)" 
+                   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                   asp-route-sortOrder="@ViewData["CurrentSort"]"
+                   asp-route-jobId="@ViewData["JobId"]">
+                   Previous
+                </a>
+            </li>
+            <li class="page-item @show1_1 @show1_2">
+                <a class="page-link" 
+                    asp-action="GetUsers" 
+                    asp-route-pageNumber="@(Model.PageIndex - 2)"
+                    asp-route-pageSize="@(Model.PageSize)" 
+                    asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                   asp-route-sortOrder="@ViewData["CurrentSort"]"
+                   asp-route-jobId="@ViewData["JobId"]">
+                    @(Model.PageIndex - 2)
+                </a>
+            </li>
+            <li class="page-item @show2">
+                <a class="page-link"
+                   asp-action="GetUsers" 
+                   asp-route-pageNumber="@(Model.PageIndex - 1)" 
+                   asp-route-pageSize="@(Model.PageSize)"
+                   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                   asp-route-sortOrder="@ViewData["CurrentSort"]"
+                   asp-route-jobId="@ViewData["JobId"]">
+                   @(Model.PageIndex - 1)
+                </a>
+            </li>
+            <li class="page-item active">
+                <a class="page-link" 
+                   asp-action="GetUsers" 
+                   asp-route-pageNumber="@(Model.PageIndex)"
+                   asp-route-pageSize="@(Model.PageSize)"
+                   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                   asp-route-sortOrder="@ViewData["CurrentSort"]"
+                   asp-route-jobId="@ViewData["JobId"]">
+                   @(Model.PageIndex)
+                </a>
+            </li>
+            <li class="page-item @show4">
+                <a class="page-link" 
+                   asp-action="GetUsers" 
+                   asp-route-pageNumber="@(Model.PageIndex + 1)" 
+                   asp-route-pageSize="@(Model.PageSize)" 
+                   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                   asp-route-sortOrder="@ViewData["CurrentSort"]"
+                   asp-route-jobId="@ViewData["JobId"]">
+                   @(Model.PageIndex + 1)
+                </a>
+            </li>
+            <li class="page-item @show5_1 @show5_2">
+                <a class="page-link" 
+                   asp-action="GetUsers" 
+                   asp-route-pageNumber="@(Model.PageIndex + 2)"
+                   asp-route-pageSize="@(Model.PageSize)"
+                   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                   asp-route-sortOrder="@ViewData["CurrentSort"]"
+                   asp-route-jobId="@ViewData["JobId"]">
+                   @(Model.PageIndex + 2)
+                </a></li>
+            <li class="page-item @nextDisabled">
+                <a class="page-link" 
+                    asp-action="GetUsers" 
+                    asp-route-pageNumber="@(Model.PageIndex + 1)" 
+                    asp-route-pageSize="@(Model.PageSize)" 
+                    asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                    asp-route-sortOrder="@ViewData["CurrentSort"]"
+                    asp-route-jobId="@ViewData["JobId"]">
+                    Next
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        var p_pageNumber = '@Model.PageIndex';
+        var p_pageSize = '@Model.PageSize';
+        var p_jobId = '@ViewData["JobId"]';
+        var p_sortOrder = '@ViewData["CurrentSort"]';
+        var p_currentFilter = '@ViewData["CurrentFilter"]';
+        var p_searchString = "";
+
+        var col_clicked = new Array(4);
+
+        for (var i = 0; i < 4; i++) {
+            col_clicked[i] = 0;
+        }
+
+        $(document).ready(function () {
+            var id = -1;
+            var val = -1;
+            switch (p_sortOrder) {
+                case 'title_desc':
+                    id = 0;
+                    val = 2;
+                    break;
+                case 'title_asc':
+                    id = 0;
+                    val = 1;
+                    break;
+                case 'fname_desc':
+                    id = 1;
+                    val = 2;
+                    break;
+                case 'fname_asc':
+                    id = 1;
+                    val = 1;
+                    break;
+                case 'lname_desc':
+                    id = 2;
+                    val = 2;
+                    break;
+                case 'lname_asc':
+                    id = 2;
+                    val = 1;
+                    break;
+                case 'status_desc':
+                    id = 3;
+                    val = 2;
+                    break;
+                case 'status_asc':
+                    id = 3;
+                    val = 1;
+                    break;                
+            }
+            if (id != -1) {
+                $('#' + id + 'ColTable').addClass('table-sortable-picked');
+                col_clicked[id] = val;
+            }
+            $('#SearchInput').val(p_currentFilter);
+            $('#jobSelect').val(p_jobId);
+            $("#pageSizeSelect").val(p_pageSize);
+
+        });
+
+        function Redirect(pageNumber, pageSize, jobId, currentFilter, sortOrder, searchString) {
+            var url = getBaseUrl() + 'GetApplications';
+
+            url = url +
+                '?pageNumber=' + pageNumber +
+                '&pageSize=' + pageSize +
+                '&jobId=' + jobId +
+                '&searchString=' + searchString +
+                '&currentFilter=' + currentFilter +
+                '&sortOrder=' + sortOrder;
+
+            console.log(url);
+            window.location.replace(url);
+        }
+
+        function Search() {
+            p_searchString = $('#SearchInput').val();
+            Redirect(1, p_pageSize, p_jobId, "", p_sortOrder, p_searchString);
+        }
+
+        function JobSelectChanged() {
+            var role = $('#jobSelect').val();
+            Redirect(1, p_pageSize, role, p_currentFilter, p_sortOrder, p_searchString);
+        }
+
+        function ColTableClick(id) {
+            if (id < 0 || id > 3) return;
+            var sortStringBeg;
+            var sortStringEnd;
+            var sortString;
+            if (col_clicked[id] == 0) {
+                ColStyleDelete();
+                $('#' + id + 'ColTable').addClass('table-sortable-picked');
+                col_clicked[id]++;
+                sortStringEnd = '_asc';
+            }
+            else if (col_clicked[id] == 1) {
+                col_clicked[id]++;
+                sortStringEnd = '_desc';
+            }
+            else if (col_clicked[id] == 2) {
+                col_clicked[id] = 1;
+                sortStringEnd = '_asc';
+            }
+            switch (id) {
+                case 0:
+                    sortStringBeg = 'title';
+                    break;
+                case 1:
+                    sortStringBeg = 'fname';
+                    break;
+                case 2:
+                    sortStringBeg = 'lname';
+                    break;
+                case 3:
+                    sortStringBeg = 'status';
+                    break;
+            }
+
+            sortString = sortStringBeg + sortStringEnd;
+
+            Redirect(1, p_pageSize, p_jobId, p_currentFilter, sortString, p_searchString);
+        }
+
+
+
+        function ColStyleDelete() {
+            for (var i = 0; i < 4; i++) {
+                $('#' + i + 'ColTable').removeClass('table-sortable-picked');
+            }
+            for (var i = 0; i < 4; i++) {
+                col_clicked[i] = 0;
+            }
+
+        }
+
+        function pageSizeSelectChanged() {
+            p_pageSize = $("#pageSizeSelect option:selected").val();
+            Redirect(1, p_pageSize, p_jobId, p_currentFilter, p_sortOrder, p_searchString);
+        }
+
+    </script>
+}

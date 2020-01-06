@@ -29,7 +29,7 @@ namespace HRWebApplication.Controllers
         }
 
         // GET: Applications/Details/5
-        [Authorize(Roles = "NORMAL_USER,HR")]
+        [Authorize(Roles = "NORMAL_USER")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -142,7 +142,7 @@ namespace HRWebApplication.Controllers
         }
 
         // GET: Applications/Edit/5
-        [Authorize(Roles = "NORMAL_USER,HR")]
+        [Authorize(Roles = "NORMAL_USER")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -167,7 +167,7 @@ namespace HRWebApplication.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "NORMAL_USER,HR")]
+        [Authorize(Roles = "NORMAL_USER")]
         public async Task<IActionResult> Edit(int id, [Bind("ApplicationId,JobOfferId,UserId,FirstName,LastName,Email,Phone,BirthDate,Cvid,ApplicationStatusId")] Applications applications)
         {
             if (id != applications.ApplicationId)
