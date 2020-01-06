@@ -1,4 +1,5 @@
-﻿@{
+﻿@using HRWebApplication.Helpers
+@{
     ViewData["Title"] = "Job Offers";
 }
 
@@ -19,7 +20,7 @@
                     class="form-control"
                     placeholder="Search by offer title..."
                     aria-label="Search by offer title"
-                    aria-describedby="button-search"/>
+                    aria-describedby="button-search" />
             <div class="input-group-append">
                 <button id="button-search"
                         class="btn btn-primary"
@@ -30,6 +31,15 @@
             </div>
         </div>
     </div>
+    @if (User.IsInRole(UserRolesTypes.HR) == true)
+    {
+        <div class="col-md-4 text-md-right pt-1 pb-1 align-self-center">
+            <a asp-action="Create" asp-controller="JobOffers" class="btn btn-outline-primary rounded-pill">
+                <i class="fa fa-plus pr-2"></i>
+                Add Job Offer
+            </a>
+        </div>
+    }
 </div>
 
 <div class="mt-1 mb-2 row">

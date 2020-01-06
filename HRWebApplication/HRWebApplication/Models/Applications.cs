@@ -20,7 +20,7 @@ namespace HRWebApplication.Models
         [Display(Name = "Last Name")]
         public string LastName { get; set; }
         public string Email { get; set; }
-        public decimal Phone { get; set; }
+        public string Phone { get; set; }
         [Display(Name = "Birth Date")]
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]

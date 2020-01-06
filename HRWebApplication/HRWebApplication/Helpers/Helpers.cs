@@ -14,6 +14,13 @@ namespace HRWebApplication.Helpers
         public static string Normal = "NORMAL_USER";
     }
 
+    public static class ApplicationStatusState
+    {
+        public static string Pending = "PENDING";
+        public static string Accepted = "ACCEPTED";
+        public static string Rejected = "REJECTED";
+    }
+
     public static class Globals
     {
         public static string IdClaimName = "UserIdClaim";
