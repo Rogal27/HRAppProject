@@ -10,8 +10,10 @@
     <div class="col-md-8 joboffer-style">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="JobOfferId" />
+            <input type="hidden" asp-for="UserId" />
             <div class="form-group mt-2">
-                <label asp-for="FirstName" class="control-label">First Name:</label>                
+                <label asp-for="FirstName" class="control-label">First Name:</label>
                 <div class="input-group">
                     <input asp-for="FirstName" class="form-control" placeholder="First Name" />
                     <div class="input-group-append">
@@ -21,7 +23,7 @@
                 <span asp-validation-for="FirstName" class="text-danger"></span>
             </div>
             <div class="form-group mt-2">
-                <label asp-for="LastName" class="control-label">Last Name:</label>                
+                <label asp-for="LastName" class="control-label">Last Name:</label>
                 <div class="input-group">
                     <input asp-for="LastName" class="form-control" placeholder="Last Name" />
                     <div class="input-group-append">
@@ -31,7 +33,7 @@
                 <span asp-validation-for="LastName" class="text-danger"></span>
             </div>
             <div class="form-group mt-2">
-                <label asp-for="Email" class="control-label">Email:</label>                
+                <label asp-for="Email" class="control-label">Email:</label>
                 <div class="input-group">
                     <input asp-for="Email" class="form-control" placeholder="Email" />
                     <div class="input-group-append">
@@ -43,7 +45,7 @@
             <div class="form-group mt-2">
                 <label asp-for="Phone" class="control-label">Phone Number:</label>
                 <div class="input-group">
-                    <input asp-for="Phone" class="form-control" placeholder="+48123456789" />
+                    <input asp-for="Phone" class="form-control" placeholder="123456789" type="text"/>
                     <div class="input-group-append">
                         <span class="input-group-text"><i class="fas fa-phone"></i></span>
                     </div>
@@ -62,12 +64,12 @@
             </div>
             <div class="form-group mt-2">
                 @*<label asp-for="Cvid" class="control-label"></label>
-                    <select asp-for="Cvid" class="form-control" asp-items="ViewBag.Cvid"></select>*@
+            <select asp-for="Cvid" class="form-control" asp-items="ViewBag.Cvid"></select>*@
                 File dropper
             </div>
             <div class="form-group mt-2">
                 @*<label asp-for="ApplicationStatusId" class="control-label"></label>
-                    <select asp-for="ApplicationStatusId" class="form-control" asp-items="ViewBag.ApplicationStatusId"></select>*@
+            <select asp-for="ApplicationStatusId" class="form-control" asp-items="ViewBag.ApplicationStatusId"></select>*@
                 Others file dropper
             </div>
             <div class="form-group mt-3">
