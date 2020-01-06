@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 
 namespace HRWebApplication.Models
@@ -12,7 +13,7 @@ namespace HRWebApplication.Models
 
         public int ApplicationStatusId { get; set; }
         public string Status { get; set; }
-
+        [JsonIgnore]
         public ICollection<Applications> Applications { get; set; }
     }
 }

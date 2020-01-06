@@ -6,9 +6,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HRWebApplication.Models;
+using Microsoft.AspNetCore.Authorization;
+using HRWebApplication.Helpers;
 
 namespace HRWebApplication.Controllers
 {
+    [Authorize]
     public class ApplicationsController : Controller
     {
         private readonly HRProjectDatabaseContext _context;
@@ -26,6 +29,7 @@ namespace HRWebApplication.Controllers
         }
 
         // GET: Applications/Details/5
+        [Authorize(Roles = "NORMAL_USER,HR")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -48,6 +52,7 @@ namespace HRWebApplication.Controllers
         }
 
         // GET: Applications/Create/5
+        [Authorize(Roles = "NORMAL_USER")]
         public async Task<IActionResult> Create(int? id)
         {
             if (id == null)
@@ -59,12 +64,30 @@ namespace HRWebApplication.Controllers
             {
                 return NotFound();
             }
+            int userId = Helper.GetUserId(User);
+            var user = await _context.Users.FirstOrDefaultAsync(a => a.UserId == userId);
+            if(user == null)
+            {
+                return NotFound();
+            }
+            var api = await _context.Applications.FirstOrDefaultAsync(a => a.UserId == userId && a.JobOfferId == jobOffer.JobOfferId);
+            if (api != null)
+            {
+                return RedirectToAction("ApplicationInfo", "Home");
+            }
+
+
+            var application = new Applications()
+            {
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                JobOfferId = jobOffer.JobOfferId,
+                UserId = user.UserId
+            };
             ViewData["JobTitle"] = jobOffer.JobTitle;
-            ViewData["ApplicationStatusId"] = new SelectList(_context.ApplicationStatus, "ApplicationStatusId", "Status");
-            ViewData["Cvid"] = new SelectList(_context.Cv, "CVID", "Path");
-            ViewData["JobOfferId"] = new SelectList(_context.JobOffers, "JobOfferId", "Description");
-            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "Email");
-            return View();
+
+            return View(application);
         }
 
         // POST: Applications/Create
@@ -72,22 +95,38 @@ namespace HRWebApplication.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ApplicationId,JobOfferId,UserId,FirstName,LastName,Email,Phone,BirthDate,Cvid,ApplicationStatusId")] Applications applications)
+        [Authorize(Roles = "NORMAL_USER")]
+        public async Task<IActionResult> Create([Bind("ApplicationId,JobOfferId,UserId,FirstName,LastName,Email,Phone,BirthDate,Cvid")] Applications applications)
         {
             if (ModelState.IsValid)
             {
+                var api = await _context.Applications.FirstOrDefaultAsync(a => a.UserId == applications.UserId && a.JobOfferId == applications.JobOfferId);
+                if (api != null)
+                {
+                    return RedirectToAction("ApplicationInfo", "Home");
+                }
+                var id = Helper.GetUserId(User);
+                if (applications.UserId != id)
+                {
+                    return Unauthorized();
+                }
+                var jobOffer = await _context.JobOffers.FirstOrDefaultAsync(a => a.JobOfferId == applications.JobOfferId);
+                if (jobOffer == null)
+                {
+                    return NotFound();
+                }
+
+                var pendingId = await _context.ApplicationStatus.FirstOrDefaultAsync(x => x.Status == ApplicationStatusState.Pending);
+                applications.ApplicationStatusId = pendingId.ApplicationStatusId;
                 _context.Add(applications);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ApplicationStatusId"] = new SelectList(_context.ApplicationStatus, "ApplicationStatusId", "Status", applications.ApplicationStatusId);
-            ViewData["Cvid"] = new SelectList(_context.Cv, "CVID", "Path", applications.Cvid);
-            ViewData["JobOfferId"] = new SelectList(_context.JobOffers, "JobOfferId", "Description", applications.JobOfferId);
-            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "Email", applications.UserId);
             return View(applications);
         }
 
         // GET: Applications/Edit/5
+        [Authorize(Roles = "NORMAL_USER,HR")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -112,6 +151,7 @@ namespace HRWebApplication.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "NORMAL_USER,HR")]
         public async Task<IActionResult> Edit(int id, [Bind("ApplicationId,JobOfferId,UserId,FirstName,LastName,Email,Phone,BirthDate,Cvid,ApplicationStatusId")] Applications applications)
         {
             if (id != applications.ApplicationId)
@@ -147,6 +187,7 @@ namespace HRWebApplication.Controllers
         }
 
         // GET: Applications/Delete/5
+        [Authorize(Roles = "NORMAL_USER")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -171,6 +212,7 @@ namespace HRWebApplication.Controllers
         // POST: Applications/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "NORMAL_USER")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var applications = await _context.Applications.FindAsync(id);

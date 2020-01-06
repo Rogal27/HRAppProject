@@ -1,0 +1,109 @@
+﻿@using HRWebApplication.Helpers
+@model HRWebApplication.Models.Users
+
+@{
+    ViewData["Title"] = "User Details";
+}
+
+<div class="panel panel-default mt-4">
+    <div class="panel-heading">
+        <div class="d-flex align-items-center">
+            <div class="pr-3" style="font-size: 25px">
+                <a href="@Url.Action("GetUsers", "Admin")">
+                    <i class="fas fa-chevron-circle-left"></i>
+                </a>
+            </div>
+            <h3 class="mb-1">
+                User Details
+            </h3>
+        </div>
+    </div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            First Name:
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.FirstName)
+        </dd>
+        <dt>
+            Last Name:
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.LastName)
+        </dd>
+        <dt>
+            Email:
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+        <dt>
+            User Role:
+        </dt>
+        <dd>
+            @if (Model.UserRole.Role == UserRolesTypes.Admin)
+            {
+                <span class="text-warning">ADMIN</span>
+            }
+            else if (Model.UserRole.Role == UserRolesTypes.HR)
+            {
+                <span class="text-success">Human Relations</span>
+            }
+            else if (Model.UserRole.Role == UserRolesTypes.Normal)
+            {
+                <span class="text-info">Normal User</span>
+            }
+            else
+            {
+                <span class="text-danger">No Role</span>
+            }
+        </dd>
+    </dl>
+    <div class="pt-2">
+        <a asp-action="Edit" asp-route-id="@Model.UserId" class="btn rounded-pill btn-primary mx-2">
+            <i class="fas fa-edit pr-2"></i>
+            Edit
+        </a>
+        <button class="btn btn-rounded btn-danger mx-2"
+                data-toggle="modal"
+                data-target="#confirm-delete">
+            <i class="fas fa-trash-alt pr-2"></i>
+            Delete
+        </button>                
+    </div>
+</div>
+
+<div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Delete User</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <p class="font-weight-bold mb-0">Are you sure you want to delete this user?</p>
+                <p class="text-danger mb-0"><small>This action cannot be undone.</small></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary rounded-pill" data-dismiss="modal">
+                    <i class="fas fa-chevron-left pr-2"></i>
+                    Cancel
+                </button>
+                @using (Html.BeginForm("Delete", "Admin", new { id = Model.UserId }, FormMethod.Post, null, new { style = "display:inline;" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-rounded btn-danger">
+                        <i class="fas fa-trash-alt pr-2"></i>
+                        Delete
+                    </button>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+

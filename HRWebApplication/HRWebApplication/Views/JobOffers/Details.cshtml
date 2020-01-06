@@ -1,4 +1,5 @@
-﻿@model HRWebApplication.Models.JobOffers
+﻿@using HRWebApplication.Helpers
+@model HRWebApplication.Models.JobOffers
 
 @{
     ViewData["Title"] = "Details";
@@ -104,56 +105,95 @@
                 @Html.DisplayFor(model => model.ValidUntil)
             </dd>
         }
+        @if (User.IsInRole(UserRolesTypes.Admin) == true)
+        {
+            <dt>
+                HR Recruiter:
+            </dt>
+            <dd>
+                <a class="btn btn-info rounded-circle" asp-controller="Admin" asp-action="Details" asp-route-id="@Model.UserId"><i class="far fa-user"></i></a>
+                @Html.DisplayFor(model => model.User.FirstName)
+                @Html.DisplayFor(model => model.User.LastName)
+            </dd>
+        }
     </dl>
     <div class="pt-2">
-        <a asp-action="Edit" asp-route-id="@Model.JobOfferId" class="btn rounded-pill btn-primary mx-2">
-            <i class="fas fa-edit pr-2"></i>
-            Edit
-        </a>
-
-        <button class="btn btn-rounded btn-danger mx-2"
-                data-toggle="modal"
-                data-target="#confirm-delete">
-            <i class="fas fa-trash-alt pr-2"></i>
-            Delete
-        </button>
-
-        <a class="btn rounded-pill btn-success text-white mx-2">
-            <i class="fas fa-pencil-alt pr-2"></i>
-            Apply
-        </a>
+        @if (User.IsInRole(UserRolesTypes.HR) == true)
+        {
+            int id = Helper.GetUserId(User);
+            if (Model.UserId == id)
+            {
+                <a asp-action="Edit" asp-route-id="@Model.JobOfferId" class="btn rounded-pill btn-primary mx-2">
+                    <i class="fas fa-edit pr-2"></i>
+                    Edit
+                </a>
+            }
+        }
+        @if (User.IsInRole(UserRolesTypes.Admin) == true || User.IsInRole(UserRolesTypes.HR) == true)
+        {
+            int id = Helper.GetUserId(User);
+            if (Model.UserId == id || User.IsInRole(UserRolesTypes.Admin) == true)
+            {
+            <button class="btn btn-rounded btn-danger mx-2"
+                    data-toggle="modal"
+                    data-target="#confirm-delete">
+                <i class="fas fa-trash-alt pr-2"></i>
+                Delete
+            </button>
+            }
+        }
+        @if (User.IsInRole(UserRolesTypes.Normal) == true)
+        {
+            <a asp-controller="Applications" asp-action="Create" asp-route-id="@Model.JobOfferId" class="btn rounded-pill btn-success text-white mx-2">
+                <i class="fas fa-pencil-alt pr-2"></i>
+                Apply
+            </a>
+        }
+        @if(User.Identity.IsAuthenticated == false)
+        {
+            <a asp-controller="Api" asp-action="SignIn" class="btn rounded-pill btn-success text-white mx-2">
+                <i class="fas fa-pencil-alt pr-2"></i>
+                Apply
+            </a>
+        }
     </div>
 </div>
+@if (User.IsInRole(UserRolesTypes.Admin) == true || User.IsInRole(UserRolesTypes.HR) == true)
+{
+    int id = Helper.GetUserId(User);
+    if (Model.UserId == id || User.IsInRole(UserRolesTypes.Admin) == true)
+    {
+        <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
 
-<div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Delete Job Offer</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
 
-            <div class="modal-header">
-                <h5 class="modal-title">Delete Job Offer</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-
-            <div class="modal-body">
-                <p class="font-weight-bold mb-0">Are you sure you want to delete this?</p>
-                <p class="text-danger mb-0"><small>This action cannot be undone.</small></p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary rounded-pill" data-dismiss="modal">
-                    <i class="fas fa-chevron-left pr-2"></i>
-                    Cancel
-                </button>
-                @using (Html.BeginForm("Delete", "JobOffers", new { id = Model.JobOfferId }, FormMethod.Post, null, new { style = "display:inline;" }))
-                {
-                    @Html.AntiForgeryToken()
-                    <button type="submit" class="btn btn-rounded btn-danger">
-                        <i class="fas fa-trash-alt pr-2"></i>
-                        Delete
-                    </button>
-                }
+                    <div class="modal-body">
+                        <p class="font-weight-bold mb-0">Are you sure you want to delete this?</p>
+                        <p class="text-danger mb-0"><small>This action cannot be undone.</small></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary rounded-pill" data-dismiss="modal">
+                            <i class="fas fa-chevron-left pr-2"></i>
+                            Cancel
+                        </button>
+                        @using (Html.BeginForm("Delete", "JobOffers", new { id = Model.JobOfferId }, FormMethod.Post, null, new { style = "display:inline;" }))
+                        {
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-rounded btn-danger">
+                                <i class="fas fa-trash-alt pr-2"></i>
+                                Delete
+                            </button>
+                        }
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</div>
+    }
+}

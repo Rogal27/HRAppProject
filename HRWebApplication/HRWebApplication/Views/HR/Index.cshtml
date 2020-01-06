@@ -1,0 +1,13 @@
+﻿@{
+    ViewData["Title"] = "HR Main Page";
+}
+
+<h2>HR MAIN PAGE</h2>
+
+<h4>Hello </h4>
+
+<div class="mt-4">
+    <a class="btn btn-primary rounded-pill" asp-controller="JobOffers" asp-action="Index">All job offers</a>
+    <a class="btn btn-primary rounded-pill" asp-controller="HR" asp-action="YourJobOffers">Your job offers</a>
+    <a class="btn btn-primary rounded-pill" asp-controller="HR" asp-action="GetApplications">Applications</a>
+</div>

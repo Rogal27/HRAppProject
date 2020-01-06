@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 
 namespace HRWebApplication.Models
@@ -12,7 +13,7 @@ namespace HRWebApplication.Models
 
         public int UserRoleId { get; set; }
         public string Role { get; set; }
-
+        [JsonIgnore]
         public ICollection<Users> Users { get; set; }
     }
 }
