@@ -77,7 +77,7 @@ namespace HRWebApplication.Controllers
             }
 
 
-            var application = new Applications()
+            var application = new ApplicationCreateModel()
             {
                 FirstName = user.FirstName,
                 LastName = user.LastName,
@@ -96,7 +96,7 @@ namespace HRWebApplication.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "NORMAL_USER")]
-        public async Task<IActionResult> Create([Bind("ApplicationId,JobOfferId,UserId,FirstName,LastName,Email,Phone,BirthDate,Cvid")] Applications applications)
+        public async Task<IActionResult> Create([Bind("ApplicationId,JobOfferId,UserId,FirstName,LastName,Email,Phone,BirthDate,Cvid,CVFile,OtherAttachmentsFiles")] ApplicationCreateModel applications)
         {
             if (ModelState.IsValid)
             {
@@ -123,6 +123,22 @@ namespace HRWebApplication.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(applications);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "NORMAL_USER")]
+        public IActionResult UploadCV()
+        {
+            return NotFound();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "NORMAL_USER")]
+        public IActionResult UploadAttachments()
+        {
+            return NotFound();
         }
 
         // GET: Applications/Edit/5
