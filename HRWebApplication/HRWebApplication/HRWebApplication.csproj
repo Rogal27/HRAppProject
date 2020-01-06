@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
+    <UserSecretsId>8a648ac8-f3e7-4fbb-9672-be5cb0ca6da5</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,12 +14,17 @@
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.2" PrivateAssets="All" />
     <PackageReference Include="Microsoft.Identity.Client" Version="4.7.1" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.10" />
+    <PackageReference Include="WindowsAzure.Storage" Version="9.1.1" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Update="Views\Admin\Index.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services" />
   </ItemGroup>
 
 </Project>
