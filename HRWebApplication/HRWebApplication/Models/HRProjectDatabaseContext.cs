@@ -91,7 +91,10 @@ namespace HRWebApplication.Models
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Phone).HasColumnType("decimal(18, 0)");
+                entity.Property(e => e.Phone)
+                    .IsRequired()
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.UserId).HasColumnName("UserID");
 
