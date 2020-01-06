@@ -17,6 +17,7 @@ namespace HRWebApplication.Helpers
     public static class Globals
     {
         public static string IdClaimName = "UserIdClaim";
+        public static List<string> getRoles = new List<string>() { "Admin", "Human Relations", "User" };
     }
 
     public static class Helper
