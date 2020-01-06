@@ -1,53 +1,123 @@
 ﻿@model IEnumerable<HRWebApplication.Models.Users>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Users";
 }
 
-<h2>Index</h2>
+<div class="mt-5 row">
+    <div class="col-md-4 text-md-left pt-1 pb-1 align-self-end">
+        <a class="btn btn-link deco-none text-decoration-none" asp-controller="Admin" asp-action="GetUsers">
+            <h3 class="font-weight-bold">
+                Users list
+            </h3>
+        </a>
+    </div>
+    <div class="col-md-4 text-md-center pl-md-0 pr-md-0 pt-1 pb-1 align-self-center">
+        <div class="input-group search-input"
+                style="border-radius: 20px">
+            <input name="search"
+                    type="text"
+                    id="JobOfferSearchInput"
+                    class="form-control"
+                    placeholder="Search..."
+                    aria-label="Search"
+                    aria-describedby="button-search" />
+            <div class="input-group-append">
+                <button id="button-search"
+                        class="btn btn-primary"
+                        type="button">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.FirstName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LastName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Email)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UserRole)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.FirstName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LastName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UserRole.Role)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.UserId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.UserId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.UserId">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<div class="mt-1 mb-2 row">
+    <div class="col-md-3 pr-0 mr-0">
+        <button class="btn btn-rounded btn-outline-info mx-2"
+                style="font-size: smaller"
+                data-toggle="collapse"
+                data-target="#filters">
+            Show filters
+            <i class="fas fa-chevron-right pl-2"></i>
+        </button>
+    </div>
+</div>
+
+<div class="mt-1 mb-1 row collapse align-self-center" id="filters">
+    <div class="col-md-3 py-1 py-md-0 pr-0">
+        <div class="mb-1" style="font-size: small">
+            Role:
+        </div>
+        <select id="roleSelect" class="rounded w-90 select-text-ellipsis">
+            <option value="null">Select Role</option>
+        </select>
+    </div>
+    <div class="col-md-2 pt-md-2 py-1 py-md-0">
+        <button class="btn text-info filters-button">
+            <i class="far fa-check-circle fa-1x"></i>Apply
+        </button>
+    </div>
+    <div class="col-md-2 pt-md-2 py-1 py-md-0">
+        <a class="btn text-danger filters-button" asp-controller="Admin" asp-action="GetUsers">
+            <i class="far fa-times-circle fa-1x"></i>Remove
+        </a>
+    </div>
+</div>
+
+<div class="table-responsive-sm">
+    <table class="table table-striped table-hover">
+        <thead class="thead-light">
+            <tr>
+                <th scope="col" style="min-width: 120px">
+                    <span id="0ColTable" class="table-sortable" onclick="ColTableClick(0)">
+                        First Name
+                        <i class="fas fa-sort text-right"></i>
+                    </span>
+                </th>
+                <th scope="col" style="min-width: 120px">
+                    <span id="1ColTable" class="table-sortable" onclick="ColTableClick(1)">
+                        Last Name
+                        <i class="fas fa-sort text-right"></i>
+                    </span>
+                <th scope="col" style="min-width: 120px">
+                <th>
+                    <span id="2ColTable" class="table-sortable" onclick="ColTableClick(2)">
+                        Email
+                        <i class="fas fa-sort text-right"></i>
+                    </span>
+                </th>
+                <th scope="col" style="min-width: 120px">
+                    <span id="3ColTable" class="table-sortable" onclick="ColTableClick(3)">
+                        User Role
+                        <i class="fas fa-sort text-right"></i>
+                    </span>
+                </th>
+                <th class="text-right" style="width: 20px" scope="col"><span id="5ColTable">Edit</span></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FirstName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.LastName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Email)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.UserRole.Role)
+                    </td>
+                    <td>
+                        
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
