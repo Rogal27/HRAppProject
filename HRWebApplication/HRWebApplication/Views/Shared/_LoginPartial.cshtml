@@ -13,7 +13,7 @@
     <ul class="navbar-nav ml-auto">
         <li class="nav-item mr-2">
             <div class="d-none d-md-block">
-                <a class="navbar-item-font-color pr-2 pl-2 pt-1 pb-1 navbar-signup" asp-controller="Users" asp-action="Details" asp-route-id="@id">Hello @User.Identity.Name</a>
+                <a class="navbar-item-font-color pr-2 pl-2 pt-1 pb-1 navbar-signup" asp-controller="UsersData" asp-action="Details" asp-route-id="@id">Hello @User.Identity.Name</a>
             </div>
         </li>
         <li class="nav-item mr-3">
@@ -23,7 +23,7 @@
         </li>
         <li>
             <div class="d-block d-md-none border-top navbar-border mt-1 pt-2 mb-1 ml-4 mr-4 d-flex justify-content-center">
-                <a class="navbar-item-font-color pr-2 pl-2 pt-1 pb-1 mr-1 navbar-signup" asp-controller="Users" asp-action="Details" asp-route-id="@id">Hello @User.Identity.Name</a>
+                <a class="navbar-item-font-color pr-2 pl-2 pt-1 pb-1 mr-1 navbar-signup" asp-controller="UsersData" asp-action="Details" asp-route-id="@id">Hello @User.Identity.Name</a>
                 <a class="navbar-item-font-color pr-2 pl-2 pt-1 pb-1 ml-1 border rounded navbar-signup" asp-controller="Api" asp-action="SignOut">Sign Out</a>
             </div>
         </li>
@@ -32,11 +32,6 @@
 else
 {
     <ul class="navbar-nav ml-auto">
-        @*<li class="nav-item mr-2">
-                <div class="d-none d-sm-block">
-                    <a class="navbar-item-font-color pr-2 pl-2 pt-1 pb-1 navbar-signup" asp-controller="Api" asp-action="LogIn">Sign In</a>
-                </div>
-            </li>*@
         <li class="nav-item mr-3">
             <div class="d-none d-md-block">
                 <a class="navbar-item-font-color pr-2 pl-2 pt-1 pb-1 border rounded navbar-signup" asp-controller="Api" asp-action="SignIn">Sign In</a>
@@ -44,7 +39,6 @@ else
         </li>
         <li>
             <div class="d-block d-md-none border-top navbar-border mt-1 pt-2 mb-1 ml-4 mr-4 d-flex justify-content-center">
-                @*<a class="navbar-item-font-color pr-2 pl-2 pt-1 pb-1 mr-1 navbar-signup" asp-controller="Api" asp-action="LogIn">Sign In</a>*@
                 <a class="navbar-item-font-color pr-2 pl-2 pt-1 pb-1 ml-1 border rounded navbar-signup" asp-controller="Api" asp-action="SignIn">Sign In</a>
             </div>
         </li>

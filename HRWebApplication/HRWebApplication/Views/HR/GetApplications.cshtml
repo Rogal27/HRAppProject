@@ -113,7 +113,7 @@
             {
                 <tr>
                     <td>
-                        @Html.DisplayFor(modelItem => item.JobOffer.JobTitle)
+                        @Html.ActionLink(item.JobOffer.JobTitle, "Details", "JobOffers", new { id = item.JobOfferId })
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.FirstName)

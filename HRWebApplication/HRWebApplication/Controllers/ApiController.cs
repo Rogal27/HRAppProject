@@ -30,13 +30,12 @@ namespace HRWebApplication.Controllers
             if (User.Identity.IsAuthenticated == false)
                 return RedirectToAction(nameof(SignIn));
 
-            //TODO:
             if (User.IsInRole(UserRolesTypes.Admin))
                 return RedirectToAction("Index", "Admin");
             else if (User.IsInRole(UserRolesTypes.HR))
                 return RedirectToAction("Index", "HR");
             else if (User.IsInRole(UserRolesTypes.Normal))
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "User");
             else return SignOut();
         }
 

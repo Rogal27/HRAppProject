@@ -63,7 +63,8 @@ namespace HRWebApplication.Controllers
             var result_filter = result
                 .Where(p => p.JobTitle.ToLower().Contains(searchString.ToLower()))
                 .Where(p => p.SalaryFrom.HasValue == false || p.SalaryFrom.Value >= salaryFrom)
-                .Where(p => p.SalaryTo.HasValue == false || p.SalaryTo.Value <= salaryTo);
+                .Where(p => p.SalaryTo.HasValue == false || p.SalaryTo.Value <= salaryTo)
+                .Where(p => p.JobOfferStatus.Status == Globals.ValidJobOffer);
 
             if (location != null && companyId != null)
             {
@@ -229,95 +230,95 @@ namespace HRWebApplication.Controllers
             return data;
         }
 
-        // GET: api/JobOffersApi/5
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetJobOffers([FromRoute] int id)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+        //// GET: api/JobOffersApi/5
+        //[HttpGet("{id}")]
+        //public async Task<IActionResult> GetJobOffers([FromRoute] int id)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
 
-            var jobOffers = await _context.JobOffers.FindAsync(id);
+        //    var jobOffers = await _context.JobOffers.FindAsync(id);
 
-            if (jobOffers == null)
-            {
-                return NotFound();
-            }
+        //    if (jobOffers == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return Ok(jobOffers);
-        }
+        //    return Ok(jobOffers);
+        //}
 
-        // PUT: api/JobOffersApi/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutJobOffers([FromRoute] int id, [FromBody] JobOffers jobOffers)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+        //// PUT: api/JobOffersApi/5
+        //[HttpPut("{id}")]
+        //public async Task<IActionResult> PutJobOffers([FromRoute] int id, [FromBody] JobOffers jobOffers)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
 
-            if (id != jobOffers.JobOfferId)
-            {
-                return BadRequest();
-            }
+        //    if (id != jobOffers.JobOfferId)
+        //    {
+        //        return BadRequest();
+        //    }
 
-            _context.Entry(jobOffers).State = EntityState.Modified;
+        //    _context.Entry(jobOffers).State = EntityState.Modified;
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!JobOffersExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+        //    try
+        //    {
+        //        await _context.SaveChangesAsync();
+        //    }
+        //    catch (DbUpdateConcurrencyException)
+        //    {
+        //        if (!JobOffersExists(id))
+        //        {
+        //            return NotFound();
+        //        }
+        //        else
+        //        {
+        //            throw;
+        //        }
+        //    }
 
-            return NoContent();
-        }
+        //    return NoContent();
+        //}
 
-        // POST: api/JobOffersApi
-        [HttpPost]
-        public async Task<IActionResult> PostJobOffers([FromBody] JobOffers jobOffers)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+        //// POST: api/JobOffersApi
+        //[HttpPost]
+        //public async Task<IActionResult> PostJobOffers([FromBody] JobOffers jobOffers)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
 
-            _context.JobOffers.Add(jobOffers);
-            await _context.SaveChangesAsync();
+        //    _context.JobOffers.Add(jobOffers);
+        //    await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetJobOffers", new { id = jobOffers.JobOfferId }, jobOffers);
-        }
+        //    return CreatedAtAction("GetJobOffers", new { id = jobOffers.JobOfferId }, jobOffers);
+        //}
 
-        // DELETE: api/JobOffersApi/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteJobOffers([FromRoute] int id)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+        //// DELETE: api/JobOffersApi/5
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> DeleteJobOffers([FromRoute] int id)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
 
-            var jobOffers = await _context.JobOffers.FindAsync(id);
-            if (jobOffers == null)
-            {
-                return NotFound();
-            }
+        //    var jobOffers = await _context.JobOffers.FindAsync(id);
+        //    if (jobOffers == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            _context.JobOffers.Remove(jobOffers);
-            await _context.SaveChangesAsync();
+        //    _context.JobOffers.Remove(jobOffers);
+        //    await _context.SaveChangesAsync();
 
-            return Ok(jobOffers);
-        }
+        //    return Ok(jobOffers);
+        //}
 
         [Route("[action]")]
         [HttpGet]
@@ -334,9 +335,9 @@ namespace HRWebApplication.Controllers
             return data;
         }
 
-        private bool JobOffersExists(int id)
-        {
-            return _context.JobOffers.Any(e => e.JobOfferId == id);
-        }
+        //private bool JobOffersExists(int id)
+        //{
+        //    return _context.JobOffers.Any(e => e.JobOfferId == id);
+        //}
     }
 }

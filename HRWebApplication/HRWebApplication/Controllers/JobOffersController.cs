@@ -229,7 +229,11 @@ namespace HRWebApplication.Controllers
                 if (jobOffers.UserId != userId)
                     return Unauthorized();
             }
-            _context.JobOffers.Remove(jobOffers);
+
+            var offer = _context.JobOffers.Where(x => x.JobOfferId == id).Include(x => x.Applications);
+            //TODO:delete cvs and maybe attachments
+
+            _context.JobOffers.RemoveRange(offer);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
