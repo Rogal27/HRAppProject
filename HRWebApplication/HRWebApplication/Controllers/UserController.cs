@@ -9,6 +9,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using SendGrid;
+using SendGrid.Helpers.Mail;
+using System.Net.Http;
+using Microsoft.Extensions.Configuration;
 
 namespace HRWebApplication.Controllers
 {
@@ -16,10 +20,12 @@ namespace HRWebApplication.Controllers
     public class UserController : Controller
     {
         private readonly HRProjectDatabaseContext _context;
+        private readonly IConfiguration _configuration;
 
-        public UserController(HRProjectDatabaseContext context)
+        public UserController(HRProjectDatabaseContext context, IConfiguration config)
         {
             _context = context;
+            _configuration = config;
         }
 
         public IActionResult Index()
@@ -156,7 +162,7 @@ namespace HRWebApplication.Controllers
                 {
                     return Unauthorized();
                 }
-                var jobOffer = await _context.JobOffers.FirstOrDefaultAsync(a => a.JobOfferId == applications.JobOfferId);
+                var jobOffer = await _context.JobOffers.Include(x => x.User).FirstOrDefaultAsync(a => a.JobOfferId == applications.JobOfferId);
                 if (jobOffer == null)
                 {
                     return NotFound();
@@ -166,6 +172,27 @@ namespace HRWebApplication.Controllers
                 applications.ApplicationStatusId = pendingId.ApplicationStatusId;
                 _context.Add(applications);
                 await _context.SaveChangesAsync();
+
+                //send email
+                var email_adr = jobOffer.User.Email;
+                var name = jobOffer.User.LastName + " " + jobOffer.User.FirstName;
+                var msg = new SendGridMessage();
+                msg.AddTo(new EmailAddress(email_adr, name));
+                msg.SetSubject("New application for your job offer has just arrived");
+
+                var fullUrl = this.Url.Action("Details", "HR", new { id = applications.ApplicationId }, Request.Scheme);
+
+                msg.AddContent(MimeType.Html, "<p>Hello!</p>" +
+                    "<p>View the application: " + fullUrl + " </p>");
+
+                msg.SetFrom(new EmailAddress("noreply@hrapp.com", "HR App Notification"));
+
+                var apiKey = _configuration.GetSection("SendGridApi_Key").Value;
+
+                var client = new SendGridClient(apiKey);
+                var response = await client.SendEmailAsync(msg);
+
+
                 return RedirectToAction(nameof(Index));
             }
             return View(applications);
