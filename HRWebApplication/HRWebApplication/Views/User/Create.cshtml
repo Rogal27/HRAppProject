@@ -8,7 +8,7 @@
 <hr />
 <div class="row">
     <div class="col-md-8 joboffer-style">
-        @using (Html.BeginForm("Create", "Applications", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        @using (Html.BeginForm("Create", "User", FormMethod.Post, new { enctype = "multipart/form-data" }))
         {
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="JobOfferId" />
