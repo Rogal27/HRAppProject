@@ -1,0 +1,140 @@
+﻿@using HRWebApplication.Helpers
+@model HRWebApplication.Models.Applications
+
+@{
+    ViewData["Title"] = "Application Details";
+}
+
+<div class="panel panel-default mt-4">
+    <div class="panel-heading">
+        <div class="d-flex align-items-center">
+            <div class="pr-3" style="font-size: 25px">
+                <a href="@Url.Action("GetApplications", "User")">
+                    <i class="fas fa-chevron-circle-left"></i>
+                </a>
+            </div>
+            <h3 class="mb-1">
+                Details
+            </h3>
+        </div>
+    </div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            First Name:
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.FirstName)
+        </dd>
+        <dt>
+            Last Name:
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.LastName)
+        </dd>
+        <dt>
+            Email:
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+        <dt>
+            Phone:
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Phone)
+        </dd>
+        <dt>
+            Birth Date:
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.BirthDate)
+        </dd>
+        <dt>
+            Job Offer:
+        </dt>
+        <dd>
+            @Html.ActionLink(Model.JobOffer.JobTitle, "Details", "JobOffers", new { id = Model.JobOfferId })
+        </dd>
+        <dt>
+            CV:
+        </dt>
+        <dd>
+            File download not implemented
+            @*@Html.DisplayFor(model => model.Cv.Path)*@
+        </dd>
+        <dt>
+            Attached Files:
+        </dt>
+        <dd>
+            File download not implemented
+            @*@Html.DisplayFor(model => model.Cv.Path)*@
+        </dd>
+        <dt>
+            Application Status:
+        </dt>
+        <dd>
+            @if (Model.ApplicationStatus.Status == ApplicationStatusState.Accepted)
+            {
+                <span class="text-success">Accepted</span>
+            }
+            else if (Model.ApplicationStatus.Status == ApplicationStatusState.Pending)
+            {
+                <span class="text-warning">Pending</span>
+            }
+            else if (Model.ApplicationStatus.Status == ApplicationStatusState.Rejected)
+            {
+                <span class="text-danger">Rejected</span>
+            }
+            else
+            {
+                <span class="text-danger">No Status</span>
+            }
+        </dd>
+    </dl>
+    <div class="pt-2">
+        <a asp-action="Edit" asp-route-id="@Model.ApplicationId" class="btn rounded-pill btn-primary mx-2">
+            <i class="fas fa-edit pr-2"></i>
+            Edit
+        </a>
+        <button class="btn btn-rounded btn-danger mx-2"
+                data-toggle="modal"
+                data-target="#confirm-delete">
+            <i class="fas fa-trash-alt pr-2"></i>
+            Delete
+        </button>
+    </div>
+</div>
+
+<div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Delete Application</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <p class="font-weight-bold mb-0">Are you sure you want to delete this application?</p>
+                <p class="text-danger mb-0"><small>This action cannot be undone.</small></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary rounded-pill" data-dismiss="modal">
+                    <i class="fas fa-chevron-left pr-2"></i>
+                    Cancel
+                </button>
+                @using (Html.BeginForm("Delete", "User", new { id=Model.ApplicationId }, FormMethod.Post, null, new { style = "display:inline;" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-rounded btn-danger">
+                        <i class="fas fa-trash pr-2"></i>
+                        Delete
+                    </button>
+                }
+            </div>
+        </div>
+    </div>
+</div>

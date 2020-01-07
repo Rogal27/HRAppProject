@@ -33,6 +33,12 @@
     <Content Update="Views\UsersData\Details.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
+    <Content Update="Views\User\Edit.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\User\Details.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Views\User\GetApplications.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>

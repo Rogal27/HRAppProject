@@ -28,7 +28,7 @@ namespace HRWebApplication.Controllers
         }
 
         [Route("[controller]/Applications/[action]")]
-        public async Task<IActionResult> GetApplications(int? pageNumber, int? pageSize, int? jobId, string searchString, string currentFilter, string sortOrder)
+        public async Task<IActionResult> GetApplications(int? pageNumber, int? pageSize, int? companyId, string searchString, string currentFilter, string sortOrder)
         {
             if (pageNumber.HasValue == false || pageNumber < 1)
             {
@@ -48,25 +48,25 @@ namespace HRWebApplication.Controllers
             }
             ViewData["CurrentFilter"] = searchString;
             ViewData["CurrentSort"] = sortOrder;
-            ViewData["JobId"] = jobId;
+            ViewData["CompanyId"] = companyId;
 
             int userId = Helper.GetUserId(User);
 
-            var jobtitles = _context.Applications.Include(j => j.JobOffer).Where(j => j.UserId == userId).Select(j => new { title = j.JobOffer.JobTitle, id = j.JobOfferId });
+            var companynames = _context.Applications.Include(j => j.JobOffer).Where(j => j.UserId == userId).Include(j=>j.JobOffer.Company).Select(j => new { title = j.JobOffer.Company.CompanyName, id = j.JobOffer.CompanyId });
+            var CompanyList = companynames.Distinct().OrderBy(x => x.title);
+            ViewBag.CompanyNames = new SelectList(CompanyList, "id", "title");
 
-            ViewBag.JobTitles = new SelectList(jobtitles, "id", "title");
-
-            var applications = _context.Applications.Include(j => j.JobOffer).Include(j => j.ApplicationStatus).Where(j => j.UserId == userId);
+            var applications = _context.Applications.Include(j => j.JobOffer).Include(j => j.ApplicationStatus).Include(j => j.JobOffer.Company).Where(j => j.UserId == userId);
             IQueryable<Applications> applications_filter = applications;
 
-            if (jobId.HasValue == true)
+            if (companyId.HasValue == true)
             {
-                applications_filter = applications_filter.Where(x => x.JobOfferId == jobId);
+                applications_filter = applications_filter.Where(x => x.JobOffer.CompanyId == companyId);
             }
 
             if (!String.IsNullOrEmpty(searchString))
             {
-                applications_filter = applications_filter.Where(x => x.FirstName.Contains(searchString) || x.LastName.Contains(searchString) || x.Email.Contains(searchString) || (x.FirstName + " " + x.LastName).Contains(searchString) || x.JobOffer.JobTitle.Contains(searchString));
+                applications_filter = applications_filter.Where(x => x.FirstName.Contains(searchString) || x.LastName.Contains(searchString) || x.Email.Contains(searchString) || (x.FirstName + " " + x.LastName).Contains(searchString) || x.JobOffer.JobTitle.Contains(searchString) || x.JobOffer.Company.CompanyName.Contains(searchString));
             }
 
             switch (sortOrder)
@@ -77,17 +77,11 @@ namespace HRWebApplication.Controllers
                 case "title_asc":
                     applications_filter = applications_filter.OrderBy(x => x.JobOffer.JobTitle).ThenByDescending(x => x.ApplicationId);
                     break;
-                case "fname_desc":
-                    applications_filter = applications_filter.OrderByDescending(x => x.FirstName);
+                case "cname_desc":
+                    applications_filter = applications_filter.OrderByDescending(x => x.JobOffer.Company.CompanyName);
                     break;
-                case "fname_asc":
-                    applications_filter = applications_filter.OrderBy(x => x.FirstName);
-                    break;
-                case "lname_desc":
-                    applications_filter = applications_filter.OrderByDescending(x => x.LastName);
-                    break;
-                case "lname_asc":
-                    applications_filter = applications_filter.OrderBy(x => x.LastName);
+                case "cname_asc":
+                    applications_filter = applications_filter.OrderBy(x => x.JobOffer.Company.CompanyName);
                     break;
                 case "status_desc":
                     applications_filter = applications_filter.OrderByDescending(x => x.ApplicationStatus.Status);
@@ -187,15 +181,15 @@ namespace HRWebApplication.Controllers
                 return NotFound();
             }
 
+            int userId = Helper.GetUserId(User);
             var applications = await _context.Applications
-                .Include(a => a.ApplicationStatus)
-                .Include(a => a.Cv)
-                .Include(a => a.JobOffer)
-                .Include(a => a.User)
-                .FirstOrDefaultAsync(m => m.ApplicationId == id);
+                .Include(j => j.JobOffer)
+                .Include(j => j.ApplicationStatus)
+                .FirstOrDefaultAsync(j => j.ApplicationId == id && j.UserId == userId);
+
             if (applications == null)
             {
-                return NotFound();
+                return Unauthorized();
             }
 
             return View(applications);
@@ -208,17 +202,34 @@ namespace HRWebApplication.Controllers
             {
                 return NotFound();
             }
-
-            var applications = await _context.Applications.FindAsync(id);
-            if (applications == null)
+            var userId = Helper.GetUserId(User);
+            var api = await _context.Applications
+                .Include(x => x.JobOffer)
+                .Include(x => x.ApplicationStatus)
+                .FirstOrDefaultAsync(x => x.ApplicationId == id && x.UserId == userId);
+            if (api == null)
             {
                 return NotFound();
             }
-            ViewData["ApplicationStatusId"] = new SelectList(_context.ApplicationStatus, "ApplicationStatusId", "Status", applications.ApplicationStatusId);
-            ViewData["Cvid"] = new SelectList(_context.Cv, "CVID", "Path", applications.Cvid);
-            ViewData["JobOfferId"] = new SelectList(_context.JobOffers, "JobOfferId", "Description", applications.JobOfferId);
-            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "Email", applications.UserId);
-            return View(applications);
+
+
+            var application = new ApplicationCreateModel()
+            {
+                FirstName = api.FirstName,
+                LastName = api.LastName,
+                Email = api.Email,
+                JobOffer = api.JobOffer,
+                JobOfferId = api.JobOffer.JobOfferId,
+                UserId = api.UserId,
+                ApplicationId = api.ApplicationId,
+                ApplicationStatus = api.ApplicationStatus,
+                ApplicationStatusId = api.ApplicationStatusId,
+                BirthDate = api.BirthDate,
+                Phone = api.Phone
+            };
+            ViewData["JobTitle"] = api.JobOffer.JobTitle;
+
+            return View(application);
         }
 
         // POST: Applications/Edit/5
@@ -227,7 +238,7 @@ namespace HRWebApplication.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("[controller]/Applications/[action]")]
-        public async Task<IActionResult> Edit(int id, [Bind("ApplicationId,JobOfferId,UserId,FirstName,LastName,Email,Phone,BirthDate,Cvid,ApplicationStatusId")] Applications applications)
+        public async Task<IActionResult> Edit(int id, [Bind("ApplicationId,ApplicationStatusId,JobOfferId,UserId,FirstName,LastName,Email,Phone,BirthDate,Cvid,CVFile,OtherAttachmentsFiles")] ApplicationCreateModel applications)
         {
             if (id != applications.ApplicationId)
             {
@@ -236,8 +247,18 @@ namespace HRWebApplication.Controllers
 
             if (ModelState.IsValid)
             {
-                try
+                var userId = Helper.GetUserId(User);
+                if (applications.UserId != userId)
                 {
+                    return Unauthorized();
+                }
+                var jobOffer = await _context.JobOffers.FirstOrDefaultAsync(a => a.JobOfferId == applications.JobOfferId);
+                if (jobOffer == null)
+                {
+                    return NotFound();
+                }
+                try
+                {                  
                     _context.Update(applications);
                     await _context.SaveChangesAsync();
                 }
@@ -254,34 +275,15 @@ namespace HRWebApplication.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ApplicationStatusId"] = new SelectList(_context.ApplicationStatus, "ApplicationStatusId", "Status", applications.ApplicationStatusId);
-            ViewData["Cvid"] = new SelectList(_context.Cv, "CVID", "Path", applications.Cvid);
-            ViewData["JobOfferId"] = new SelectList(_context.JobOffers, "JobOfferId", "Description", applications.JobOfferId);
-            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "Email", applications.UserId);
-            return View(applications);
-        }
-
-        // GET: Applications/Delete/5
-        [Authorize(Roles = "NORMAL_USER")]
-        [Route("[controller]/Applications/[action]")]
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
+            if (applications.JobOffer == null)
             {
-                return NotFound();
+                ViewData["JobTitle"] = "Job offer title unavailable";
             }
-
-            var applications = await _context.Applications
-                .Include(a => a.ApplicationStatus)
-                .Include(a => a.Cv)
-                .Include(a => a.JobOffer)
-                .Include(a => a.User)
-                .FirstOrDefaultAsync(m => m.ApplicationId == id);
-            if (applications == null)
+            else
             {
-                return NotFound();
+                ViewData["JobTitle"] = applications.JobOffer?.JobTitle;
             }
-
+            
             return View(applications);
         }
 
@@ -291,7 +293,13 @@ namespace HRWebApplication.Controllers
         [Route("[controller]/Applications/[action]")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var applications = await _context.Applications.FindAsync(id);
+            int userId = Helper.GetUserId(User);
+            var applications = await _context.Applications.FirstOrDefaultAsync(x => x.ApplicationId == id && x.UserId == userId);
+            if(applications == null)
+            {
+                return NotFound();
+            }
+
             _context.Applications.Remove(applications);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

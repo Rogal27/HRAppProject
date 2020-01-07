@@ -35,10 +35,10 @@
     </div>
     <div class="col-md-4 text-md-left pl-md-5 pt-1 pb-1 align-self-center">
         <div class="mb-1" style="font-size: small">
-            Job Title:
+            Company:
         </div>
-        <select id="jobSelect" class="rounded w-90 select-text-ellipsis" asp-items="ViewBag.JobTitles" onchange="JobSelectChanged()">
-            <option value="">Select Job</option>
+        <select id="companySelect" class="rounded w-90 select-text-ellipsis" asp-items="ViewBag.CompanyNames" onchange="CompanySelectChanged()">
+            <option value="">Select Company</option>
         </select>
     </div>
 </div>
@@ -55,17 +55,11 @@
                 </th>
                 <th scope="col" style="min-width: 140px">
                     <span id="1ColTable" class="table-sortable" onclick="ColTableClick(1)">
-                        First Name
+                        Company Name
                         <i class="fas fa-sort text-right"></i>
                     </span>
-                <th scope="col" style="min-width: 120px">
-                    <span id="2ColTable" class="table-sortable" onclick="ColTableClick(2)">
-                        Last Name
-                        <i class="fas fa-sort text-right"></i>
-                    </span>
-                </th>
                 <th scope="col" style="min-width: 140px">
-                    <span id="3ColTable" class="table-sortable" onclick="ColTableClick(3)">
+                    <span id="2ColTable" class="table-sortable" onclick="ColTableClick(2)">
                         Status
                         <i class="fas fa-sort text-right"></i>
                     </span>
@@ -81,10 +75,7 @@
                         @Html.ActionLink(item.JobOffer.JobTitle, "Details", "JobOffers", new { id = item.JobOfferId })
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.FirstName)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.LastName)
+                        @Html.DisplayFor(modelItem => item.JobOffer.Company.CompanyName)
                     </td>
                     <td>
                         @if (item.ApplicationStatus.Status == ApplicationStatusState.Accepted)
@@ -149,7 +140,7 @@
                    asp-route-pageSize="@(Model.PageSize)" 
                    asp-route-currentFilter="@ViewData["CurrentFilter"]"
                    asp-route-sortOrder="@ViewData["CurrentSort"]"
-                   asp-route-jobId="@ViewData["JobId"]">
+                   asp-route-companyId="@ViewData["CompanyId"]">
                    Previous
                 </a>
             </li>
@@ -160,7 +151,7 @@
                     asp-route-pageSize="@(Model.PageSize)" 
                     asp-route-currentFilter="@ViewData["CurrentFilter"]"
                    asp-route-sortOrder="@ViewData["CurrentSort"]"
-                   asp-route-jobId="@ViewData["JobId"]">
+                   asp-route-companyId="@ViewData["CompanyId"]">
                     @(Model.PageIndex - 2)
                 </a>
             </li>
@@ -171,7 +162,7 @@
                    asp-route-pageSize="@(Model.PageSize)"
                    asp-route-currentFilter="@ViewData["CurrentFilter"]"
                    asp-route-sortOrder="@ViewData["CurrentSort"]"
-                   asp-route-jobId="@ViewData["JobId"]">
+                   asp-route-companyId="@ViewData["CompanyId"]">
                    @(Model.PageIndex - 1)
                 </a>
             </li>
@@ -182,7 +173,7 @@
                    asp-route-pageSize="@(Model.PageSize)"
                    asp-route-currentFilter="@ViewData["CurrentFilter"]"
                    asp-route-sortOrder="@ViewData["CurrentSort"]"
-                   asp-route-jobId="@ViewData["JobId"]">
+                   asp-route-companyId="@ViewData["CompanyId"]">
                    @(Model.PageIndex)
                 </a>
             </li>
@@ -193,7 +184,7 @@
                    asp-route-pageSize="@(Model.PageSize)" 
                    asp-route-currentFilter="@ViewData["CurrentFilter"]"
                    asp-route-sortOrder="@ViewData["CurrentSort"]"
-                   asp-route-jobId="@ViewData["JobId"]">
+                   asp-route-companyId="@ViewData["CompanyId"]">
                    @(Model.PageIndex + 1)
                 </a>
             </li>
@@ -204,7 +195,7 @@
                    asp-route-pageSize="@(Model.PageSize)"
                    asp-route-currentFilter="@ViewData["CurrentFilter"]"
                    asp-route-sortOrder="@ViewData["CurrentSort"]"
-                   asp-route-jobId="@ViewData["JobId"]">
+                   asp-route-companyId="@ViewData["CompanyId"]">
                    @(Model.PageIndex + 2)
                 </a></li>
             <li class="page-item @nextDisabled">
@@ -214,7 +205,7 @@
                     asp-route-pageSize="@(Model.PageSize)" 
                     asp-route-currentFilter="@ViewData["CurrentFilter"]"
                     asp-route-sortOrder="@ViewData["CurrentSort"]"
-                    asp-route-jobId="@ViewData["JobId"]">
+                    asp-route-companyId="@ViewData["CompanyId"]">
                     Next
                 </a>
             </li>
@@ -226,14 +217,14 @@
     <script>
         var p_pageNumber = '@Model.PageIndex';
         var p_pageSize = '@Model.PageSize';
-        var p_jobId = '@ViewData["JobId"]';
+        var p_companyId = '@ViewData["CompanyId"]';
         var p_sortOrder = '@ViewData["CurrentSort"]';
         var p_currentFilter = '@ViewData["CurrentFilter"]';
         var p_searchString = "";
 
-        var col_clicked = new Array(4);
+        var col_clicked = new Array(3);
 
-        for (var i = 0; i < 4; i++) {
+        for (var i = 0; i < 3; i++) {
             col_clicked[i] = 0;
         }
 
@@ -249,48 +240,40 @@
                     id = 0;
                     val = 1;
                     break;
-                case 'fname_desc':
+                case 'cname_desc':
                     id = 1;
                     val = 2;
                     break;
-                case 'fname_asc':
+                case 'cname_asc':
                     id = 1;
-                    val = 1;
-                    break;
-                case 'lname_desc':
-                    id = 2;
-                    val = 2;
-                    break;
-                case 'lname_asc':
-                    id = 2;
                     val = 1;
                     break;
                 case 'status_desc':
-                    id = 3;
+                    id = 2;
                     val = 2;
                     break;
                 case 'status_asc':
-                    id = 3;
+                    id = 2;
                     val = 1;
-                    break;                
+                    break;              
             }
             if (id != -1) {
                 $('#' + id + 'ColTable').addClass('table-sortable-picked');
                 col_clicked[id] = val;
             }
             $('#SearchInput').val(p_currentFilter);
-            $('#jobSelect').val(p_jobId);
+            $('#companySelect').val(p_companyId);
             $("#pageSizeSelect").val(p_pageSize);
 
         });
 
-        function Redirect(pageNumber, pageSize, jobId, currentFilter, sortOrder, searchString) {
+        function Redirect(pageNumber, pageSize, companyId, currentFilter, sortOrder, searchString) {
             var url = getBaseUrl() + 'GetApplications';
 
             url = url +
                 '?pageNumber=' + pageNumber +
                 '&pageSize=' + pageSize +
-                '&jobId=' + jobId +
+                '&companyId=' + companyId +
                 '&searchString=' + searchString +
                 '&currentFilter=' + currentFilter +
                 '&sortOrder=' + sortOrder;
@@ -301,16 +284,16 @@
 
         function Search() {
             p_searchString = $('#SearchInput').val();
-            Redirect(1, p_pageSize, p_jobId, "", p_sortOrder, p_searchString);
+            Redirect(1, p_pageSize, p_companyId, "", p_sortOrder, p_searchString);
         }
 
-        function JobSelectChanged() {
-            var role = $('#jobSelect').val();
+        function CompanySelectChanged() {
+            var role = $('#companySelect').val();
             Redirect(1, p_pageSize, role, p_currentFilter, p_sortOrder, p_searchString);
         }
 
         function ColTableClick(id) {
-            if (id < 0 || id > 3) return;
+            if (id < 0 || id > 2) return;
             var sortStringBeg;
             var sortStringEnd;
             var sortString;
@@ -333,28 +316,25 @@
                     sortStringBeg = 'title';
                     break;
                 case 1:
-                    sortStringBeg = 'fname';
+                    sortStringBeg = 'cname';
                     break;
                 case 2:
-                    sortStringBeg = 'lname';
-                    break;
-                case 3:
                     sortStringBeg = 'status';
                     break;
             }
 
             sortString = sortStringBeg + sortStringEnd;
 
-            Redirect(1, p_pageSize, p_jobId, p_currentFilter, sortString, p_searchString);
+            Redirect(1, p_pageSize, p_companyId, p_currentFilter, sortString, p_searchString);
         }
 
 
 
         function ColStyleDelete() {
-            for (var i = 0; i < 4; i++) {
+            for (var i = 0; i < 3; i++) {
                 $('#' + i + 'ColTable').removeClass('table-sortable-picked');
             }
-            for (var i = 0; i < 4; i++) {
+            for (var i = 0; i < 3; i++) {
                 col_clicked[i] = 0;
             }
 
@@ -362,7 +342,7 @@
 
         function pageSizeSelectChanged() {
             p_pageSize = $("#pageSizeSelect option:selected").val();
-            Redirect(1, p_pageSize, p_jobId, p_currentFilter, p_sortOrder, p_searchString);
+            Redirect(1, p_pageSize, p_companyId, p_currentFilter, p_sortOrder, p_searchString);
         }
 
     </script>

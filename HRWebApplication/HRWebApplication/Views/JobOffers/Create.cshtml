@@ -9,12 +9,12 @@
 <hr />
 <div class="row">
     <div class="col-md-8 joboffer-style">
-        <form asp-action="Create">
+        <form>
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="JobTitle" class="control-label">Job title:</label>                
+                <label asp-for="JobTitle" class="control-label">Job title:</label>
                 <div class="input-group">
-                    <input asp-for="JobTitle" class="form-control" placeholder="Programmer" />
+                    <input asp-for="JobTitle" class="form-control" id="JobTitleInput" placeholder="Programmer" />
                     <div class="input-group-append">
                         <span class="input-group-text"><i class="fas fa-pen"></i></span>
                     </div>
@@ -27,7 +27,7 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text" id="salary1">PLN</span>
                     </div>
-                    <input asp-for="SalaryFrom" class="form-control" placeholder="From"/>
+                    <input asp-for="SalaryFrom" class="form-control" id="SalaryFromInput" placeholder="From" />
                 </div>
                 <span asp-validation-for="SalaryFrom" class="text-danger"></span>
             </div>
@@ -37,14 +37,14 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text" id="salary2">PLN</span>
                     </div>
-                    <input asp-for="SalaryTo" class="form-control" placeholder="To"/>
+                    <input asp-for="SalaryTo" class="form-control" id="SalaryToInput" placeholder="To" />
                 </div>
                 <span asp-validation-for="SalaryTo" class="text-danger"></span>
             </div>
             <div class="form-group mt-2">
-                <label asp-for="Location" class="control-label">Location:</label>                
+                <label asp-for="Location" class="control-label">Location:</label>
                 <div class="input-group">
-                    <input asp-for="Location" class="form-control" placeholder="Warsaw" />
+                    <input asp-for="Location" class="form-control" id="LocationInput" placeholder="Warsaw" />
                     <div class="input-group-append">
                         <span class="input-group-text"><i class="fas fa-map-marked-alt"></i></span>
                     </div>
@@ -52,18 +52,18 @@
                 <span asp-validation-for="Location" class="text-danger"></span>
             </div>
             <div class="form-group mt-2">
-                <label asp-for="Description" class="control-label">Description:</label>
-                <textarea asp-for="Description" class="form-control" rows="3" placeholder="Enter description"></textarea>
+                <label asp-for="Description" class="control-label" >Description:</label>
+                <textarea asp-for="Description" class="form-control" rows="3" id="DescriptionInput" placeholder="Enter description"></textarea>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group mt-2">
                 <label asp-for="ValidUntil" class="control-label">Offer expiration date:</label>
                 <div class="input-group">
-                    <input asp-for="ValidUntil" class="form-control" />
+                    <input asp-for="ValidUntil" class="form-control" id="ValidUntilInput" />
                     <div class="input-group-append">
                         <span class="input-group-text"><i class="fas fa-calendar-day"></i></span>
                     </div>
-                </div>                
+                </div>
                 <span asp-validation-for="ValidUntil" class="text-danger"></span>
             </div>
             <div class="form-group mt-2">
@@ -85,15 +85,61 @@
                     <i class="fas fa-chevron-left pr-2"></i>
                     Cancel
                 </a>
-                <button type="submit" class="btn rounded-pill btn-primary">
+                <button type="button" class="btn rounded-pill btn-primary" onclick="SumbitForm()">
                     <i class="fas fa-check pr-2"></i>
                     Save
                 </button>
+                <div class="spinner-border text-warning d-none" id="spinner"></div>
             </div>
         </form>
+        <div class="d-none" id="ErrorInfo">
+
+        </div>
     </div>
 </div>
 
+
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+
+    <script>
+        function gettoken() {
+            var token = '@Html.AntiForgeryToken()';
+            token = $(token).val();
+            return token;
+        }
+
+        function SumbitForm() {
+            var url = getBaseUrl();
+            url = url + 'Create';
+            $('#spinner').removeClass('d-none');
+            $.ajax({
+                url: url,
+                method: "post",
+                dataType: "json",
+                data: {
+                    __RequestVerificationToken: gettoken(),
+                    JobTitle: $("#JobTitleInput").val(),
+                    SalaryFrom: $("#SalaryFromInput").val(),
+                    SalaryTo: $("#SalaryToInput").val(),
+                    Location: $("#LocationInput").val(),
+                    Description: $("#DescriptionInput").val(),
+                    ValidUntil: $("#ValidUntilInput").val(),
+                    CompanyId: $("#companyName").val()
+                }
+            })
+                .done(function () {
+                    var new_url = '@Url.Action("YourJobOffers","HR")';
+                    window.location.href = new_url;
+                })
+                .fail(function () {
+                    $('#ErrorInfo').html('<p class="text-danger">There was an error submiting your form</p>');
+                    $('#ErrorInfo').removeClass('d-none');
+                })
+                .always(function () {
+                    $('#spinner').addClass('d-none');
+                })
+        }
+    </script>
 }
