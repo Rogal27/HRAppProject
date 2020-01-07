@@ -19,7 +19,7 @@ namespace HRWebApplication.Controllers
             _context = context;
         }
 
-        // GET: Companies
+        //// GET: Companies
         //public async Task<IActionResult> Index()
         //{
         //    return View(await _context.Companies.ToListAsync());

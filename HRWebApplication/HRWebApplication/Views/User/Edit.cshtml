@@ -1,18 +1,20 @@
 ﻿@model HRWebApplication.Models.ApplicationCreateModel
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Edit";
 }
 
 <h4 class="mt-4 font-weight-bold">Application for @ViewData["JobTitle"]</h4>
 <hr />
 <div class="row">
     <div class="col-md-8 joboffer-style">
-        @using (Html.BeginForm("Create", "Applications", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        @using (Html.BeginForm("Edit", "User", new { id = Model.ApplicationId }, FormMethod.Post, null, new { enctype = "multipart/form-data" }))
         {
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="JobOfferId" />
             <input type="hidden" asp-for="UserId" />
+            <input type="hidden" asp-for="ApplicationStatusId" />
+            <input type="hidden" asp-for="ApplicationId" />
             <div class="form-group mt-2">
                 <label asp-for="FirstName" class="control-label">First Name:</label>
                 <div class="input-group">
@@ -56,7 +58,7 @@
             <div class="form-group mt-2">
                 <label asp-for="BirthDate" class="control-label">Birth Date:</label>
                 <div class="input-group">
-                    <input asp-for="BirthDate" class="form-control" />
+                    @Html.TextBoxFor(m => m.BirthDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
                     <div class="input-group-append">
                         <span class="input-group-text"><i class="fas fa-calendar-day"></i></span>
                     </div>
@@ -100,13 +102,13 @@
                 </div>
             </div>
             <div class="form-group mt-3">
-                <a asp-area="" asp-controller="JobOffers" asp-action="Index" class="btn rounded-pill btn-secondary mr-2">
+                <a asp-area="" asp-controller="User" asp-action="GetApplications" class="btn rounded-pill btn-secondary mr-2">
                     <i class="fas fa-chevron-left pr-2"></i>
                     Cancel
                 </a>
-                <button type="submit" class="btn rounded-pill btn-success">
+                <button type="submit" class="btn rounded-pill btn-primary">
                     <i class="fas fa-check pr-2"></i>
-                    Apply
+                    Save
                 </button>
             </div>
         }

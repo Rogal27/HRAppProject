@@ -2,7 +2,7 @@
 @model HRWebApplication.Services.PaginatedList<HRWebApplication.Models.Applications>
 
 @{
-    ViewData["Title"] = "Users";
+    ViewData["Title"] = "Applications";
 }
 
 <div class="mt-5 row">
@@ -179,7 +179,7 @@
         <ul class="pagination">
             <li class="page-item @prevDisabled">
                 <a class="page-link" 
-                   asp-action="GetUsers" 
+                   asp-action="GetApplications" 
                    asp-route-pageNumber="@(Model.PageIndex - 1)"
                    asp-route-pageSize="@(Model.PageSize)" 
                    asp-route-currentFilter="@ViewData["CurrentFilter"]"
@@ -190,7 +190,7 @@
             </li>
             <li class="page-item @show1_1 @show1_2">
                 <a class="page-link" 
-                    asp-action="GetUsers" 
+                    asp-action="GetApplications" 
                     asp-route-pageNumber="@(Model.PageIndex - 2)"
                     asp-route-pageSize="@(Model.PageSize)" 
                     asp-route-currentFilter="@ViewData["CurrentFilter"]"
@@ -201,7 +201,7 @@
             </li>
             <li class="page-item @show2">
                 <a class="page-link"
-                   asp-action="GetUsers" 
+                   asp-action="GetApplications" 
                    asp-route-pageNumber="@(Model.PageIndex - 1)" 
                    asp-route-pageSize="@(Model.PageSize)"
                    asp-route-currentFilter="@ViewData["CurrentFilter"]"
@@ -212,7 +212,7 @@
             </li>
             <li class="page-item active">
                 <a class="page-link" 
-                   asp-action="GetUsers" 
+                   asp-action="GetApplications" 
                    asp-route-pageNumber="@(Model.PageIndex)"
                    asp-route-pageSize="@(Model.PageSize)"
                    asp-route-currentFilter="@ViewData["CurrentFilter"]"
@@ -223,7 +223,7 @@
             </li>
             <li class="page-item @show4">
                 <a class="page-link" 
-                   asp-action="GetUsers" 
+                   asp-action="GetApplications" 
                    asp-route-pageNumber="@(Model.PageIndex + 1)" 
                    asp-route-pageSize="@(Model.PageSize)" 
                    asp-route-currentFilter="@ViewData["CurrentFilter"]"
@@ -234,7 +234,7 @@
             </li>
             <li class="page-item @show5_1 @show5_2">
                 <a class="page-link" 
-                   asp-action="GetUsers" 
+                   asp-action="GetApplications" 
                    asp-route-pageNumber="@(Model.PageIndex + 2)"
                    asp-route-pageSize="@(Model.PageSize)"
                    asp-route-currentFilter="@ViewData["CurrentFilter"]"
@@ -244,7 +244,7 @@
                 </a></li>
             <li class="page-item @nextDisabled">
                 <a class="page-link" 
-                    asp-action="GetUsers" 
+                    asp-action="GetApplications" 
                     asp-route-pageNumber="@(Model.PageIndex + 1)" 
                     asp-route-pageSize="@(Model.PageSize)" 
                     asp-route-currentFilter="@ViewData["CurrentFilter"]"

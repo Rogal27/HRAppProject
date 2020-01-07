@@ -80,11 +80,41 @@ namespace HRWebApplication.Controllers
         [Authorize(Roles = "HR")]
         public async Task<IActionResult> Create([Bind("JobOfferId,JobTitle,SalaryFrom,SalaryTo,Location,Description,ValidUntil,CompanyId")] JobOfferCompanyModel data)
         {
-            if (!ModelState.IsValid)
+            //if (!ModelState.IsValid)
+            //{
+            //    data.CompaniesCollection = await _context.Companies.ToListAsync();
+            //    return View(data);
+            //}
+            bool valid = true;
+
+            if(data!=null)
+            {
+                var comp = await _context.Companies.FirstOrDefaultAsync(x => x.CompanyId == data.CompanyId);
+                if (comp == null)
+                    valid = false;
+                if (string.IsNullOrEmpty(data.JobTitle) == true)
+                    valid = false;
+                if (string.IsNullOrEmpty(data.Description) == true || data.Description.Length < 5)
+                    valid = false;
+                if (data.SalaryFrom.HasValue && data.SalaryFrom < 0)
+                    valid = false;
+                if (data.SalaryTo.HasValue && data.SalaryTo < 0)
+                    valid = false;
+                if (data.SalaryFrom.HasValue && data.SalaryTo.HasValue && data.SalaryFrom > data.SalaryTo)
+                    valid = false;
+                if (data.ValidUntil.HasValue == true)
+                {
+                    if (data.ValidUntil < DateTime.Now)
+                        valid = false;
+                }
+            }
+
+            if(valid ==false)
             {
                 data.CompaniesCollection = await _context.Companies.ToListAsync();
-                return View(data);
+                return BadRequest();
             }
+
 
             int userID = Helper.GetUserId(User);
             if (userID == -1)
@@ -111,8 +141,77 @@ namespace HRWebApplication.Controllers
             await _context.JobOffers.AddAsync(job);
             await _context.SaveChangesAsync();
 
-            return RedirectToAction("YourJobOffers", "HR");
+            Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
+            return Json("Message sent!");
         }
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //[Authorize(Roles = "HR")]
+        //public async Task<IActionResult> Create([Bind("JobOfferId,JobTitle,SalaryFrom,SalaryTo,Location,Description,ValidUntil,CompanyId")] JobOfferCompanyModel data)
+        //{
+        //    //if (!ModelState.IsValid)
+        //    //{
+        //    //    data.CompaniesCollection = await _context.Companies.ToListAsync();
+        //    //    return View(data);
+        //    //}
+        //    bool valid = true;
+
+        //    if (data != null)
+        //    {
+        //        var comp = await _context.Companies.FirstOrDefaultAsync(x => x.CompanyId == data.CompanyId);
+        //        if (comp == null)
+        //            valid = false;
+        //        if (string.IsNullOrEmpty(data.JobTitle) == true)
+        //            valid = false;
+        //        if (string.IsNullOrEmpty(data.Description) == true || data.Description.Length < 5)
+        //            valid = false;
+        //        if (data.SalaryFrom.HasValue && data.SalaryFrom < 0)
+        //            valid = false;
+        //        if (data.SalaryTo.HasValue && data.SalaryTo < 0)
+        //            valid = false;
+        //        if (data.SalaryFrom.HasValue && data.SalaryTo.HasValue && data.SalaryFrom > data.SalaryTo)
+        //            valid = false;
+        //        if (data.ValidUntil.HasValue == true)
+        //        {
+        //            if (data.ValidUntil < DateTime.Now)
+        //                valid = false;
+        //        }
+        //    }
+
+        //    if (valid == false)
+        //    {
+        //        data.CompaniesCollection = await _context.Companies.ToListAsync();
+        //        return View(data);
+        //    }
+
+
+        //    int userID = Helper.GetUserId(User);
+        //    if (userID == -1)
+        //        return Unauthorized();
+
+        //    var status = _context.JobOfferStatus.FirstOrDefault(stat => stat.Status == "VALID");
+        //    JobOffers job = new JobOffers
+        //    {
+        //        CompanyId = data.CompanyId,
+        //        CreationDate = DateTime.Now,
+        //        Description = data.Description,
+        //        JobOfferStatusId = status.JobOfferStatusId,
+        //        JobTitle = data.JobTitle,
+        //        Location = data.Location,
+        //        SalaryFrom = data.SalaryFrom,
+        //        SalaryTo = data.SalaryTo,
+        //        UserId = userID,
+        //        ValidUntil = data.ValidUntil
+        //    };
+
+
+
+
+        //    await _context.JobOffers.AddAsync(job);
+        //    await _context.SaveChangesAsync();
+
+        //    return RedirectToAction("YourJobOffers", "HR");
+        //}
 
         // GET: JobOffers/Edit/5
         [Authorize(Roles = "HR")]

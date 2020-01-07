@@ -1,0 +1,198 @@
+﻿@model HRWebApplication.Models.ApplicationCreateModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h4 class="mt-4 font-weight-bold">Application for @ViewData["JobTitle"]</h4>
+<hr />
+<div class="row">
+    <div class="col-md-8 joboffer-style">
+        @using (Html.BeginForm("Create", "User", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="JobOfferId" />
+            <input type="hidden" asp-for="UserId" />
+            <div class="form-group mt-2">
+                <label asp-for="FirstName" class="control-label">First Name:</label>
+                <div class="input-group">
+                    <input asp-for="FirstName" class="form-control" placeholder="First Name" />
+                    <div class="input-group-append">
+                        <span class="input-group-text"><i class="fas fa-user-alt"></i></span>
+                    </div>
+                </div>
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-group mt-2">
+                <label asp-for="LastName" class="control-label">Last Name:</label>
+                <div class="input-group">
+                    <input asp-for="LastName" class="form-control" placeholder="Last Name" />
+                    <div class="input-group-append">
+                        <span class="input-group-text"><i class="fas fa-user-alt"></i></span>
+                    </div>
+                </div>
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+            <div class="form-group mt-2">
+                <label asp-for="Email" class="control-label">Email:</label>
+                <div class="input-group">
+                    <input asp-for="Email" class="form-control" placeholder="Email" />
+                    <div class="input-group-append">
+                        <span class="input-group-text"><i class="fas fa-at"></i></span>
+                    </div>
+                </div>
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group mt-2">
+                <label asp-for="Phone" class="control-label">Phone Number:</label>
+                <div class="input-group">
+                    <input asp-for="Phone" class="form-control" placeholder="123456789" type="text" />
+                    <div class="input-group-append">
+                        <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                    </div>
+                </div>
+                <span asp-validation-for="Phone" class="text-danger"></span>
+            </div>
+            <div class="form-group mt-2">
+                <label asp-for="BirthDate" class="control-label">Birth Date:</label>
+                <div class="input-group">
+                    <input asp-for="BirthDate" class="form-control" />
+                    <div class="input-group-append">
+                        <span class="input-group-text"><i class="fas fa-calendar-day"></i></span>
+                    </div>
+                </div>
+                <span asp-validation-for="BirthDate" class="text-danger"></span>
+            </div>
+            <div class="form-group mt-2">
+                <label class="control-label">CV:</label>
+                <div class="file-upload">
+                    <button class="file-upload-btn" type="button" onclick="$('#1file-upload-input').trigger( 'click' )">Add CV</button>
+
+                    <div class="image-upload-wrap" id="1image-upload-wrap">
+                        <input asp-for="CVFile" class="file-upload-input" id="1file-upload-input" type='file' onchange="readURL1(this);" accept="application/pdf" />
+                        <div class="drag-text">
+                            <h3>Drag and drop a CV <br /> or select <q>ADD CV</q></h3>
+                        </div>
+                    </div>
+                    <div class="file-upload-content" id="1file-upload-content">
+                        <label>Your CV:</label>
+                        <div class="image-title-wrap">
+                            <button type="button" onclick="removeUpload1()" class="remove-image">Remove <span class="image-title" id="1image-title">Uploaded CV</span></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group mt-2">
+                <label class="control-info">Other Attachments:</label>
+                <div class="file-upload">
+                    <div class="image-upload-wrap" id="2image-upload-wrap">
+                        <input asp-for="OtherAttachmentsFiles" class="file-upload-input" id="2file-upload-input" type="file" multiple="multiple" onchange="readURL2(this);" />
+                        <div class="drag-text">
+                            <h3>Drag and drop a attachments <br /> or select them</h3>
+                        </div>
+                    </div>
+                    <div class="file-upload-content" id="2file-upload-content">
+                        <label>Your Attachments:</label>
+                        <div class="image-title-wrap">
+                            <button type="button" onclick="removeUpload2()" class="remove-image">Remove <span class="image-title" id="2image-title">Uploaded Files</span></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group mt-3">
+                <a asp-area="" asp-controller="JobOffers" asp-action="Index" class="btn rounded-pill btn-secondary mr-2">
+                    <i class="fas fa-chevron-left pr-2"></i>
+                    Cancel
+                </a>
+                <button type="submit" class="btn rounded-pill btn-success">
+                    <i class="fas fa-check pr-2"></i>
+                    Apply
+                </button>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        function readURL1(input) {
+            if (input.files && input.files[0]) {
+
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $('#1image-upload-wrap').hide();
+
+                    $('#1file-upload-content').show();
+
+                    $('#1image-title').html(input.files[0].name);
+                };
+
+                reader.readAsDataURL(input.files[0]);
+
+            } else {
+                removeUpload1();
+            }
+        }
+
+        function readURL2(input) {
+            if (input.files && input.files[0]) {
+                if (input.files.length == 1) {
+                    var reader = new FileReader();
+
+                    reader.onload = function (e) {
+                        $('#2image-upload-wrap').hide();
+
+                        $('#2file-upload-content').show();
+
+                        $('#2image-title').html(input.files[0].name);
+                    };
+
+                    reader.readAsDataURL(input.files[0]);
+                }
+                else {
+                    var reader = new FileReader();
+
+                    reader.onload = function (e) {
+                        $('#2image-upload-wrap').hide();
+
+                        $('#2file-upload-image').attr('src', e.target.result);
+
+                        $('#2file-upload-content').show();
+
+                        $('#2image-title').html(' ' + input.files.length + ' files');
+                    };
+
+                    reader.readAsDataURL(input.files[0]);
+                }
+            } else {
+                removeUpload2();
+            }
+        }
+
+        function removeUpload1() {
+            $('#1file-upload-input').replaceWith($('#1file-upload-input').clone());
+            $('#1file-upload-content').hide();
+            $('#1image-upload-wrap').show();
+        }
+        $('#1image-upload-wrap').bind('dragover', function () {
+            $('#1image-upload-wrap').addClass('image-dropping');
+        });
+        $('#1image-upload-wrap').bind('dragleave', function () {
+            $('#1image-upload-wrap').removeClass('image-dropping');
+        });
+
+        function removeUpload2() {
+            $('#2file-upload-input').replaceWith($('#2file-upload-input').clone());
+            $('#2file-upload-content').hide();
+            $('#2image-upload-wrap').show();
+        }
+        $('#2image-upload-wrap').bind('dragover', function () {
+            $('#2image-upload-wrap').addClass('image-dropping');
+        });
+        $('#2image-upload-wrap').bind('dragleave', function () {
+            $('#2image-upload-wrap').removeClass('image-dropping');
+        });
+    </script>
+}
