@@ -1,0 +1,64 @@
+﻿@using HRWebApplication.Helpers
+@model HRWebApplication.Models.Users
+
+@{
+    ViewData["Title"] = "User Details";
+}
+
+<div class="panel panel-default mt-4">
+    <div class="panel-heading">
+        <div class="d-flex align-items-center">
+            <div class="pr-3" style="font-size: 25px">
+                <a href="@Url.Action("Index", "HomeRole")">
+                    <i class="fas fa-chevron-circle-left"></i>
+                </a>
+            </div>
+            <h3 class="mb-1">
+                User Details
+            </h3>
+        </div>
+    </div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            First Name:
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.FirstName)
+        </dd>
+        <dt>
+            Last Name:
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.LastName)
+        </dd>
+        <dt>
+            Email:
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+        <dt>
+            User Role:
+        </dt>
+        <dd>
+            @if (Model.UserRole.Role == UserRolesTypes.Admin)
+            {
+                <span class="text-warning">ADMIN</span>
+            }
+            else if (Model.UserRole.Role == UserRolesTypes.HR)
+            {
+                <span class="text-success">Human Relations</span>
+            }
+            else if (Model.UserRole.Role == UserRolesTypes.Normal)
+            {
+                <span class="text-info">Normal User</span>
+            }
+            else
+            {
+                <span class="text-danger">No Role</span>
+            }
+        </dd>
+    </dl>
+</div>
+

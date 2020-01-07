@@ -112,7 +112,7 @@ namespace HRWebApplication.Models
                 entity.HasOne(d => d.JobOffer)
                     .WithMany(p => p.Applications)
                     .HasForeignKey(d => d.JobOfferId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_Applications_JobOffer");
 
                 entity.HasOne(d => d.User)

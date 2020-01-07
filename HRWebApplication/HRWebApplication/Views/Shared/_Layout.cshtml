@@ -26,16 +26,18 @@
         <button type="button" class="navbar-toggler mr-3" data-toggle="collapse" data-target="#collapsibleNavbar">
             <span class="navbar-toggler-icon"></span>
         </button>
-        @*<a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">HRWebApplication</a>*@
         <div class="collapse navbar-collapse" id="collapsibleNavbar">
             <ul class="navbar-nav ml-4 mr-4">
                 <li class="nav-item">
-                    <div class="border-top navbar-border mt-2 mb-1 d-block d-md-none">
-                        <a class="nav-link navbar-item-font-color" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                    </div>
-                    <div class="d-none d-md-block border-bottom navbar-border-hover">
-                        <a class="nav-link navbar-item-font-color" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                    </div>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <div class="border-top navbar-border mt-2 mb-1 d-block d-md-none">
+                            <a class="nav-link navbar-item-font-color" asp-area="" asp-controller="HomeRole" asp-action="Index">Home</a>
+                        </div>
+                        <div class="d-none d-md-block border-bottom navbar-border-hover">
+                            <a class="nav-link navbar-item-font-color" asp-area="" asp-controller="HomeRole" asp-action="Index">Home</a>
+                        </div>
+                    }
                 </li>
                 <li class="nav-item">
                     <div class="border-top navbar-border mt-1 mb-1 d-block d-md-none">
@@ -43,22 +45,6 @@
                     </div>
                     <div class="d-none d-md-block border-bottom navbar-border-hover">
                         <a class="nav-link navbar-item-font-color" asp-area="" asp-controller="JobOffers" asp-action="Index">Job Offers</a>
-                    </div>
-                </li>
-                <li class="nav-item">
-                    <div class="border-top navbar-border mt-1 mb-1 d-block d-md-none">
-                        <a class="nav-link navbar-item-font-color" asp-area="" asp-controller="Admin" asp-action="GetUsers">Users</a>
-                    </div>
-                    <div class="d-none d-md-block border-bottom navbar-border-hover">
-                        <a class="nav-link navbar-item-font-color" asp-area="" asp-controller="Admin" asp-action="GetUsers">Users</a>
-                    </div>
-                </li>
-                <li class="nav-item">
-                    <div class="border-top navbar-border mt-1 mb-1 d-block d-md-none">
-                        <a class="nav-link navbar-item-font-color" asp-area="" asp-controller="Applications" asp-action="Create">Create Application</a>
-                    </div>
-                    <div class="d-none d-md-block border-bottom navbar-border-hover">
-                        <a class="nav-link navbar-item-font-color" asp-area="" asp-controller="Applications" asp-action="Create">Create Applications</a>
                     </div>
                 </li>
             </ul>

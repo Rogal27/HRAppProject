@@ -125,22 +125,6 @@ namespace HRWebApplication.Controllers
             return View(applications);
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Authorize(Roles = "NORMAL_USER")]
-        public IActionResult UploadCV()
-        {
-            return NotFound();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Authorize(Roles = "NORMAL_USER")]
-        public IActionResult UploadAttachments()
-        {
-            return NotFound();
-        }
-
         // GET: Applications/Edit/5
         [Authorize(Roles = "NORMAL_USER")]
         public async Task<IActionResult> Edit(int? id)
