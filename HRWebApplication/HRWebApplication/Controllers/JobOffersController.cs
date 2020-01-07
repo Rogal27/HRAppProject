@@ -67,10 +67,13 @@ namespace HRWebApplication.Controllers
         [Authorize(Roles = "HR")]
         public async Task<ActionResult> Create()
         {
+            var companies = await _context.Companies.ToListAsync();
             var model = new JobOfferCompanyModel
             {
-                CompaniesCollection = await _context.Companies.ToListAsync()
+                CompaniesCollection = companies
             };
+
+            ViewBag.Companies = new SelectList(companies, "CompanyId", "CompanyName");
 
             return View(model);
         }
