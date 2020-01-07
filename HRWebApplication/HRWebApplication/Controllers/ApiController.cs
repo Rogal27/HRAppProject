@@ -25,6 +25,7 @@ namespace HRWebApplication.Controllers
             AzureAdB2COptions = b2cOptions.Value;
         }
 
+        [HttpGet]
         public IActionResult LogIn()
         {
             if (User.Identity.IsAuthenticated == false)

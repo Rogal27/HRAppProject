@@ -28,11 +28,13 @@ namespace HRWebApplication.Controllers
             _configuration = config;
         }
 
+        [HttpGet]
         public IActionResult Index()
         {
             return View();
         }
 
+        [HttpGet]
         [Route("[controller]/Applications/[action]")]
         public async Task<IActionResult> GetApplications(int? pageNumber, int? pageSize, int? companyId, string searchString, string currentFilter, string sortOrder)
         {
@@ -104,6 +106,7 @@ namespace HRWebApplication.Controllers
         }
 
         // GET: Applications/Create/5
+        [HttpGet]
         [Route("[controller]/Applications/[action]")]
         public async Task<IActionResult> Create(int? id)
         {
@@ -200,6 +203,7 @@ namespace HRWebApplication.Controllers
 
 
         // GET: Applications/Details/5
+        [HttpGet]
         [Route("[controller]/Applications/[action]")]
         public async Task<IActionResult> Details(int? id)
         {
@@ -222,6 +226,7 @@ namespace HRWebApplication.Controllers
             return View(applications);
         }
         // GET: Applications/Edit/5
+        [HttpGet]
         [Route("[controller]/Applications/[action]")]
         public async Task<IActionResult> Edit(int? id)
         {

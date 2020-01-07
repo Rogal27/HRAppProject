@@ -10,6 +10,7 @@ namespace HRWebApplication.Controllers
 {
     public class HomeRoleController : Controller
     {
+        [HttpGet]
         public IActionResult Index()
         {
             if(User.IsInRole(UserRolesTypes.Admin)==true)

@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>HRWebApplication</name>
+    </assembly>
+    <members>
+        <member name="M:HRWebApplication.Controllers.JobOffersApiController.GetJobOffers(System.Int32,System.Int32,System.String,System.Nullable{System.Int32},System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String)">
+            <summary>
+            Returns all Job Offers, supports filtering and pagination and sorting orders
+            </summary>
+        </member>
+        <member name="M:HRWebApplication.Controllers.JobOffersApiController.GetJobOffersForHR(System.Int32,System.Int32,System.String,System.Nullable{System.Int32},System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.Nullable{System.Int32})">
+            <summary>
+            Returns Job Offers that were annouced by HR Member with id = HRID, supports filtering and pagination and sorting orders
+            </summary>
+        </member>
+        <member name="M:HRWebApplication.Controllers.JobOffersApiController.GetLocations">
+            <summary>
+            Returns all locations that have ever appeared in Job Offers
+            </summary>
+        </member>
+        <member name="M:HRWebApplication.Controllers.JobOffersApiController.GetCompanies">
+            <summary>
+            Returns all Companies that have ever appeared in Job Offers
+            </summary>
+        </member>
+        <member name="T:HRWebApplication.Models.MSALStaticCache">
+            <summary>
+            This implementation is just for demo purposes and does not scale. For better cache implementations see 
+            https://github.com/Azure-Samples/active-directory-aspnetcore-webapp-openidconnect-v2/tree/master/2-WebApp-graph-user/2-1-Call-MSGraph
+            </summary>
+        </member>
+    </members>
+</doc>

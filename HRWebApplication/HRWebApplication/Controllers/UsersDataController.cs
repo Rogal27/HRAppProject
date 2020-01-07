@@ -21,6 +21,7 @@ namespace HRWebApplication.Controllers
             _context = context;
         }
 
+        [HttpGet]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)

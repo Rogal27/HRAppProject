@@ -45,6 +45,7 @@ namespace HRWebApplication.Controllers
 
         // GET: Companies/Create
         [Authorize(Roles = "HR")]
+        [HttpGet]
         public IActionResult Create()
         {
             return View();
