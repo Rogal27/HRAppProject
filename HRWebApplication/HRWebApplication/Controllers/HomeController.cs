@@ -10,6 +10,7 @@ namespace HRWebApplication.Controllers
 {
     public class HomeController : Controller
     {
+        [HttpGet]
         public IActionResult Index()
         {
             return View();
@@ -34,16 +35,19 @@ namespace HRWebApplication.Controllers
         //    return View();
         //}        
 
+        [HttpGet]
         public IActionResult Logoff()
         {
             return View();
         }
 
+        [HttpGet]
         public IActionResult ApplicationInfo()
         {
             return View();
         }
 
+        [HttpGet]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

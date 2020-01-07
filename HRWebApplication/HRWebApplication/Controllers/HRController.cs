@@ -22,11 +22,13 @@ namespace HRWebApplication.Controllers
         {
             _context = context;
         }
+        [HttpGet]
         public IActionResult Index()
         {
             return View();
         }
 
+        [HttpGet]
         public IActionResult YourJobOffers()
         {
             int id = Helper.GetUserId(User);
@@ -34,6 +36,7 @@ namespace HRWebApplication.Controllers
             return View();
         }
 
+        [HttpGet]
         [Route("[controller]/Applications/[action]")]
         public async Task<IActionResult> GetApplications(int? pageNumber, int? pageSize, int? jobId, string searchString, string currentFilter, string sortOrder)
         {
@@ -110,6 +113,7 @@ namespace HRWebApplication.Controllers
             return View(await PaginatedList<Applications>.CreateAsync(applications_filter.AsNoTracking(), pageNumber ?? 1, pageSize ?? 10));
         }
 
+        [HttpGet]
         [Route("[controller]/Applications/[action]")]
         public async Task<IActionResult> Details(int? id)
         {

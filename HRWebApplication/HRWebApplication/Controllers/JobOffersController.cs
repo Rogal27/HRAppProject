@@ -23,12 +23,14 @@ namespace HRWebApplication.Controllers
         }
 
         // GET: JobOffers
+        [HttpGet]
         public IActionResult Index()
         {
             return View();
         }
 
         // GET: JobOffers/Details/5
+        [HttpGet]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -61,6 +63,7 @@ namespace HRWebApplication.Controllers
         }
 
         // GET: JobOffers/Create
+        [HttpGet]
         [Authorize(Roles = "HR")]
         public async Task<ActionResult> Create()
         {
@@ -215,6 +218,7 @@ namespace HRWebApplication.Controllers
 
         // GET: JobOffers/Edit/5
         [Authorize(Roles = "HR")]
+        [HttpGet]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)

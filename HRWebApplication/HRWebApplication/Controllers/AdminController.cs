@@ -22,12 +22,14 @@ namespace HRWebApplication.Controllers
         {
             _context = context;
         }
+        [HttpGet]
         public IActionResult Index()
         {
             return View();
         }
         // GET: Admin/Users
         [Route("[controller]/Users/[action]")]
+        [HttpGet]
         public async Task<IActionResult> GetUsers(int? pageNumber, int? pageSize, string userRole, string searchString, string currentFilter, string sortOrder)
         {
             if (pageNumber.HasValue == false || pageNumber < 1)
@@ -104,6 +106,7 @@ namespace HRWebApplication.Controllers
 
         // GET: Admin/Users/Details/5
         [Route("[controller]/Users/[action]")]
+        [HttpGet]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -124,6 +127,7 @@ namespace HRWebApplication.Controllers
 
         // GET: Admin/Users/Edit/5
         [Route("[controller]/Users/[action]")]
+        [HttpGet]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -190,6 +194,7 @@ namespace HRWebApplication.Controllers
         }
 
         [Route("[controller]/Applications/[action]")]
+        [HttpGet]
         public async Task<IActionResult> GetApplications(int? pageNumber, int? pageSize, int? jobId, string searchString, string currentFilter, string sortOrder)
         {
             if (pageNumber.HasValue == false || pageNumber < 1)

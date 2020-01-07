@@ -23,6 +23,9 @@ namespace HRWebApplication.Controllers
         }
 
         // GET: api/JobOffersApi
+        /// <summary>
+        /// Returns all Job Offers, supports filtering and pagination and sorting orders
+        /// </summary>
         [HttpGet]
         public async Task<PagingViewModel<JobOffers>> GetJobOffers(int pageNumber = 1, int pageSize = 10, string searchString = "", int? companyId = null, string location = null, int? salaryFrom = 0, int? salaryTo = int.MaxValue, string sortOrder = null)
         {
@@ -121,6 +124,9 @@ namespace HRWebApplication.Controllers
             return data;
         }
 
+        /// <summary>
+        /// Returns Job Offers that were annouced by HR Member with id = HRID, supports filtering and pagination and sorting orders
+        /// </summary>
         [Route("[action]")]
         [HttpGet]
         public async Task<PagingViewModel<JobOffers>> GetJobOffersForHR(int pageNumber = 1, int pageSize = 10, string searchString = "", int? companyId = null, string location = null, int? salaryFrom = 0, int? salaryTo = int.MaxValue, string sortOrder = null, int? HRID = -1)
@@ -320,6 +326,9 @@ namespace HRWebApplication.Controllers
         //    return Ok(jobOffers);
         //}
 
+        /// <summary>
+        /// Returns all locations that have ever appeared in Job Offers
+        /// </summary>
         [Route("[action]")]
         [HttpGet]
         public async Task<IEnumerable<string>> GetLocations()
@@ -327,6 +336,9 @@ namespace HRWebApplication.Controllers
             var data = await _context.JobOffers.Select(s => s.Location).Distinct().OrderBy(s => s).ToListAsync();
             return data;
         }
+        /// <summary>
+        /// Returns all Companies that have ever appeared in Job Offers
+        /// </summary>
         [Route("[action]")]
         [HttpGet]
         public async Task<IEnumerable<Companies>> GetCompanies()
